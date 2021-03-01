@@ -1,0 +1,421 @@
+package Analizadores;
+import java_cup.runtime.*;
+import Application.*;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.BufferedWriter;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
+import java.nio.charset.Charset;
+import java.nio.charset.CharsetEncoder;
+import java.nio.charset.CodingErrorAction;
+
+parser code
+{:  
+    public static int contId=1;
+    public static Nodo Raiz;
+    public static int num = 1;
+    public static void graficarArbol(Nodo act, String nombre){
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        //String data;
+        //File archivo;
+        //FileOutputStream salida;
+        try {
+            System.out.println("****************************");
+            fichero = new FileWriter("arboles/" + nombre + ".dot");
+            //archivo = new File("arboles/" + nombre + ".dot");
+            pw = new PrintWriter(fichero);
+            pw.println("digraph G{");
+            System.out.println("digraph G{");
+            //data = "digraph G{\n";
+            pw.println("rankdir=UD");
+            System.out.println("rankdir=UD");
+            //data = data + "rankdir=UD\n";
+            pw.println("node[shape=record]");
+            System.out.println("node[shape=record]");
+            //data = data + "node[shape=box]\n";
+            pw.println("concentrate=true");
+            System.out.println("concentrate=true");
+            //data = data + "concentrate=true\n";
+            pw.println(act.getCodigoInterno());
+            System.out.println(act.getCodigoInterno());
+            //data = data + act.getCodigoInterno();
+            pw.println("}");
+            System.out.println("}");
+            //data = data + "}";
+            //System.out.println(data);
+            //salida = new FileOutputStream(archivo);
+            //new OutputStreamWriter(archivo, "utf-8");
+            //CharsetEncoder encoder = Charset.forName("utf-8").newEncoder(); 
+            //encoder.onMalformedInput(CodingErrorAction.REPORT); 
+            //encoder.onUnmappableCharacter(CodingErrorAction.REPORT); 
+            //BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("arboles/" + nombre + ".dot"),encoder));
+            //out.write("verga de oso");
+            //out.close();
+            //byte[] txt = data.getBytes();
+            //salida.write(txt);
+            //out.write("data");
+        } catch (Exception e) {
+            System.out.println("error, no se realizo el archivo");
+        } finally {
+            try {
+                if (null != fichero) {
+                    fichero.close();
+                }
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+        //para compilar el archivo dot y obtener la imagen
+        try {
+            //dirección doonde se ecnuentra el compilador de graphviz
+            String dotPath = "C:\\Program Files\\Graphviz\\bin\\dot.exe";
+            //dirección del archivo dot
+            String fileInputPath = "arboles/" + nombre + ".dot";
+            //dirección donde se creara la magen
+            String fileOutputPath = "arboles/" + nombre + ".dot";
+            //tipo de conversón
+            String tParam = "-Tjpg";
+            String tOParam = "-o";
+
+            String[] cmd = new String[5];
+            cmd[0] = dotPath;
+            cmd[1] = tParam;
+            cmd[2] = fileInputPath;
+            cmd[3] = tOParam;
+            cmd[4] = fileOutputPath;
+
+            Runtime rt = Runtime.getRuntime();
+
+            rt.exec(cmd);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+        }
+    }
+    //-----------------------------------------para errores sintacticos-------------------------------------------------------------------------------------------
+    public void syntax_error(Symbol s)
+    {
+        //System.err.println("Error en la Línea " + (s.right+1) +" Columna "+(s.left+1)+ ". Identificador "+s.value + " no reconocido. Se ha recuperado del error." );
+        App.TxtSalida.append("Error en la Línea " + (s.right+1) +" Columna "+(s.left+1)+ ". Identificador "+s.value + " no reconocido. Se ha recuperado del error.\n" );
+    }
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception
+    {
+        //System.err.println("Error en la Línea " + (s.right+1)+ " Columna "+(s.left+1)+". Identificador " +s.value + " no reconocido.");
+        App.TxtSalida.append("Error en la Línea " + (s.right+1)+ " Columna "+(s.left+1)+". Identificador " +s.value + " no reconocido.\n");
+    }
+    //-------------------------------------------------------------------------------------------------------------------------------------------------------------
+:}
+
+action code {:
+:}
+
+// terminal [Tipo] listaterminales;
+terminal String TKParA, TKParC, TKComa, TKBarra, TKPunto, TKMas, TKAsterisco, TKPorcentaje, TKPuntoComa, TKInterrogacion, TKColocho;
+terminal String TKConj, TKDosPuntos, cadena, caracterespecial, entero, identificador, TKGuion, TKMayor, conjunto, conjuntoExp, id;
+// non terminal [Tipo] listanoterminales;
+non terminal String INICIO, CUERPO, CONJUNTO, SINGULARES, EXPRESION, DEFINICION;
+non terminal Nodo ARBOL, HOJAS;
+
+
+start with INICIO;
+
+//INICIO ::= INICIO TKComa identificador{:System.out.println("HOLA");:}
+//        | identificador{::};
+
+
+INICIO ::= TKParA CUERPO EXPRESION TKPorcentaje TKPorcentaje TKPorcentaje TKPorcentaje DEFINICION TKParC {:System.err.println("CORRECTO");:};
+
+CUERPO ::= TKConj TKDosPuntos identificador TKGuion TKMayor CONJUNTO TKPuntoComa{::}
+        | CUERPO TKConj TKDosPuntos identificador TKGuion TKMayor CONJUNTO TKPuntoComa{::};
+
+CONJUNTO ::= conjunto{::}
+            | conjuntoExp{::};
+
+EXPRESION ::= identificador:nombre TKGuion TKMayor ARBOL:valor TKPuntoComa{:
+                //PARA EL CALCULO DE PRIMEROS
+                int[] primeros1 = new int[1];
+                primeros1[0] = parser.num;
+                //PARA EL CALCULO DE ULTIMOS
+                int[] ultimos1 = new int[1];
+                ultimos1[0] = parser.num;
+                Nodo fin = new Nodo(null, null, "#", parser.contId,parser.num, "N", primeros1, ultimos1);
+                parser.contId++;
+
+                //PARA EL CALCULO DE PRIMEROS
+                int [] primeros;
+                if (valor.anulable == "A"){
+                    primeros = new int[valor.primeros.length + fin.primeros.length];
+                    int j = 0;
+                    for (int i = 0; i < primeros.length; i++){
+                        if (i < valor.primeros.length){
+                            primeros[i] = valor.primeros[i];
+                        } else {
+                            primeros[i] = fin.primeros[j];
+                            j++;
+                        }
+                    }
+                } else {
+                    primeros = valor.primeros;
+                }
+                //PARA EL CALCULO DE ULTIMOS
+                int [] ultimos;
+                if (fin.anulable == "A"){
+                    ultimos = new int[valor.ultimos.length + fin.ultimos.length];
+                    int j = 0;
+                    for (int i = 0; i < ultimos.length; i++){
+                        if (i < valor.ultimos.length){
+                            ultimos[i] = valor.ultimos[i];
+                        } else {
+                            ultimos[i] = fin.ultimos[j];
+                            j++;
+                        }
+                    }
+                } else {
+                    ultimos = fin.ultimos;
+                }
+                //PARA EL CALCULO DE ANULABLES
+                String anulable;
+                if (fin.anulable == "A" && valor.anulable == "A"){
+                    anulable = "A";
+                } else {
+                    anulable = "N";
+                }
+                
+                Nodo raiz = new Nodo(valor, fin, ".", parser.contId,0, anulable, primeros, ultimos);
+                parser.Raiz = raiz;
+                
+                System.err.println("hola bb");
+
+                graficarArbol(raiz, nombre);
+                parser.num = 1;
+            :}
+            | EXPRESION identificador:nombre TKGuion TKMayor ARBOL:valor TKPuntoComa{:
+                //PARA EL CALCULO DE PRIMEROS
+                int[] primeros1 = new int[1];
+                primeros1[0] = parser.num;
+                //PARA EL CALCULO DE ULTIMOS
+                int[] ultimos1 = new int[1];
+                ultimos1[0] = parser.num;
+                Nodo fin = new Nodo(null, null, "#", parser.contId,parser.num, "N", primeros1, ultimos1);
+                parser.contId++;
+
+                //PARA EL CALCULO DE PRIMEROS
+                int [] primeros;
+                if (valor.anulable == "A"){
+                    primeros = new int[valor.primeros.length + fin.primeros.length];
+                    int j = 0;
+                    for (int i = 0; i < primeros.length; i++){
+                        if (i < valor.primeros.length){
+                            primeros[i] = valor.primeros[i];
+                        } else {
+                            primeros[i] = fin.primeros[j];
+                            j++;
+                        }
+                    }
+                } else {
+                    primeros = valor.primeros;
+                }
+                //PARA EL CALCULO DE ULTIMOS
+                int [] ultimos;
+                if (fin.anulable == "A"){
+                    ultimos = new int[valor.ultimos.length + fin.ultimos.length];
+                    int j = 0;
+                    for (int i = 0; i < ultimos.length; i++){
+                        if (i < valor.ultimos.length){
+                            ultimos[i] = valor.ultimos[i];
+                        } else {
+                            ultimos[i] = fin.ultimos[j];
+                            j++;
+                        }
+                    }
+                } else {
+                    ultimos = fin.ultimos;
+                }
+                //PARA EL CALCULO DE ANULABLES
+                String anulable;
+                if (fin.anulable == "A" && valor.anulable == "A"){
+                    anulable = "A";
+                } else {
+                    anulable = "N";
+                }
+                
+                Nodo raiz = new Nodo(valor, fin, ".", parser.contId,0, anulable, primeros, ultimos);
+                parser.Raiz = raiz;
+                
+                System.err.println("hola bb");
+
+                graficarArbol(raiz, nombre);
+                parser.num = 1;
+            :};
+
+ARBOL ::= TKPunto ARBOL:a ARBOL:b{:
+            //PARA EL CALCULO DE PRIMEROS
+            int [] primeros;
+            if (a.anulable == "A"){
+                primeros = new int[a.primeros.length + b.primeros.length];
+                int j = 0;
+                for (int i = 0; i < primeros.length; i++){
+                    if (i < a.primeros.length){
+                        primeros[i] = a.primeros[i];
+                    } else {
+                        primeros[i] = b.primeros[j];
+                        j++;
+                    }
+                }
+            } else {
+                primeros = a.primeros;
+            }
+
+            //PARA EL CALCULO DE ULTIMOS
+            int [] ultimos;
+            if (b.anulable == "A"){
+                ultimos = new int[a.ultimos.length + b.ultimos.length];
+                int j = 0;
+                for (int i = 0; i < ultimos.length; i++){
+                    if (i < a.ultimos.length){
+                        ultimos[i] = a.ultimos[i];
+                    } else {
+                        ultimos[i] = b.ultimos[j];
+                        j++;
+                    }
+                }
+            } else {
+                ultimos = b.ultimos;
+            }
+            
+            //PARA EL CALCULO DE ANULABLES
+            String anulable;
+            if (a.anulable == "A" && b.anulable == "A"){
+                anulable = "A";
+            } else {
+                anulable = "N";
+            }
+            Nodo NuevoPadre = new Nodo(a,b,".",parser.contId,0, anulable, primeros, ultimos);
+            parser.contId++;
+            RESULT = NuevoPadre;
+        :}
+        | TKBarra ARBOL:a ARBOL:b{:
+            //PARA EL CALCULO DE PRIMEROS
+            int[] primeros = new int[a.primeros.length + b.primeros.length];
+            int j = 0;
+            for (int i = 0; i < primeros.length; i++){
+                if (i < a.primeros.length){
+                    primeros[i] = a.primeros[i];
+                } else {
+                    primeros[i] = b.primeros[j];
+                    j++;
+                }
+            }
+            //CALCULOS DE ULTIMOS
+            int[] ultimos = new int[a.ultimos.length + b.ultimos.length];
+            j = 0;
+            for (int i = 0; i < ultimos.length; i++){
+                if (i < a.ultimos.length){
+                    ultimos[i] = a.ultimos[i];
+                } else {
+                    ultimos[i] = b.ultimos[j];
+                    j++;
+                }
+            }
+            //PARA EL CALCULO DE ANULABLES
+            String anulable;
+            if (a.anulable == "A" || b.anulable == "A"){
+                anulable = "A";
+            } else {
+                anulable = "N";
+            }
+            Nodo NuevoPadre = new Nodo(a,b,"\\|",parser.contId,0, anulable, primeros, ultimos);
+            parser.contId++;
+            RESULT = NuevoPadre;
+        :}
+        | TKAsterisco ARBOL:a{:
+            //CALCULOS DE PRIMEROS
+            int[] primeros = a.primeros;
+            //CALCULOS DE ULTIMOS
+            int[] ultimos = a.ultimos;
+            Nodo NuevoPadre = new Nodo(a,null,"*",parser.contId,0, "A", primeros, ultimos);
+            parser.contId++;
+            RESULT = NuevoPadre;
+        :}
+        | TKMas ARBOL:a{:
+            //PARA EL CALCULO DE PRIMEROS
+            int[] primeros = a.primeros;
+            //CALCULOS DE ULTIMOS
+            int[] ultimos = a.ultimos;
+            //PARA EL CALCULO DE ANULABLES
+            String anulable;
+            if(a.anulable == "N"){
+                anulable = "N";
+            } else {
+                anulable = "A";
+            }
+            Nodo NuevoPadre = new Nodo(a,null,"+",parser.contId,0, anulable, primeros, ultimos);
+            parser.contId++;
+            RESULT = NuevoPadre;
+        :}
+        | TKInterrogacion ARBOL:a{:
+            //PARA EL CALCULO DE PRIMEROS
+            int[] primeros = a.primeros;
+            //CALCULOS DE ULTIMOS
+            int[] ultimos = a.ultimos;
+            Nodo NuevoPadre = new Nodo(a,null,"?",parser.contId,0, "A", primeros, ultimos);
+            parser.contId++;
+            RESULT = NuevoPadre;
+        :}
+        | HOJAS:a{:
+            RESULT = a;
+        :};
+
+HOJAS ::= TKParA:val0 identificador:val TKParC:val1{:
+            //PARA EL CALCULO DE PRIMEROS
+            int[] primeros = new int[1];
+            primeros[0] = parser.num;
+            //PARA EL CALCULO DE PRIMEROS
+            int[] ultimos = new int[1];
+            ultimos[0] = parser.num;
+            Nodo NuevaHoja = new Nodo(null,null,val0+val+val1,parser.contId,parser.num, "N", primeros, ultimos);
+            parser.contId++;
+            parser.num++;
+            RESULT = NuevaHoja;
+        :}
+        | caracterespecial:val{:
+            //PARA EL CALCULO DE PRIMEROS
+            int[] primeros = new int[1];
+            primeros[0] = parser.num;
+            //PARA EL CALCULO DE PRIMEROS
+            int[] ultimos = new int[1];
+            ultimos[0] = parser.num;
+            Nodo NuevaHoja = new Nodo(null,null,val,parser.contId,parser.num, "N", primeros, ultimos);
+            parser.contId++;
+            parser.num++;
+            RESULT = NuevaHoja;
+        :}
+        | cadena:val{:
+            //String caracter = val.substring(1,1);
+            /*String cadena = "";
+            for (int i = 0; i<val.length(); i++){
+                if (val.charAt(i) != '"'){
+                    cadena = cadena + val.charAt(i);
+                }
+            }*/
+
+            //PARA EL CALCULO DE PRIMEROS
+            int[] primeros = new int[1];
+            primeros[0] = parser.num;
+            //PARA EL CALCULO DE PRIMEROS
+            int[] ultimos = new int[1];
+            ultimos[0] = parser.num;
+            Nodo NuevaHoja = new Nodo(null,null,val,parser.contId,parser.num, "N", primeros, ultimos);
+            parser.contId++;
+            parser.num++;
+            RESULT = NuevaHoja;
+        :};
+
+DEFINICION ::= identificador TKDosPuntos cadena TKPuntoComa{::}
+            | DEFINICION identificador TKDosPuntos cadena TKPuntoComa{::};

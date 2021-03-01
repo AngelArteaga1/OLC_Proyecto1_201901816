@@ -1,0 +1,41 @@
+digraph G{
+rankdir=UD
+node[shape=record]
+concentrate=true
+nodo33 [ label =" { N |{1|.|9}| id: 0} "];
+nodo31 [ label =" { N |{1|.|8}| id: 0} "];
+nodo16 [ label =" { N |{1|{posibles}|1}| id: 1} "];
+nodo31->nodo16
+nodo30 [ label =" { N |{2,3|.|8}| id: 0} "];
+nodo18 [ label =" { A |{2|?|2}| id: 0} "];
+nodo17 [ label =" { N |{2|"-"|2}| id: 2} "];
+nodo18->nodo17
+nodo30->nodo18
+nodo29 [ label =" { N |{3|.|8}| id: 0} "];
+nodo19 [ label =" { N |{3|{digito}|3}| id: 3} "];
+nodo29->nodo19
+nodo28 [ label =" { N |{4|.|8}| id: 0} "];
+nodo20 [ label =" { N |{4|{digito}|4}| id: 4} "];
+nodo28->nodo20
+nodo27 [ label =" { N |{5|.|8}| id: 0} "];
+nodo21 [ label =" { N |{5|{digito}|5}| id: 5} "];
+nodo27->nodo21
+nodo26 [ label =" { N |{6|.|8}| id: 0} "];
+nodo22 [ label =" { N |{6|{letra}|6}| id: 6} "];
+nodo26->nodo22
+nodo25 [ label =" { N |{7|.|8}| id: 0} "];
+nodo23 [ label =" { N |{7|{letra}|7}| id: 7} "];
+nodo25->nodo23
+nodo24 [ label =" { N |{8|{letra}|8}| id: 8} "];
+nodo25->nodo24
+nodo26->nodo25
+nodo27->nodo26
+nodo28->nodo27
+nodo29->nodo28
+nodo30->nodo29
+nodo31->nodo30
+nodo33->nodo31
+nodo32 [ label =" { N |{9|#|9}| id: 9} "];
+nodo33->nodo32
+
+}

@@ -8,7 +8,7 @@ nodo16 [ label =" { N |{1|{posibles}|1}| id: 1} "];
 nodo31->nodo16
 nodo30 [ label =" { N |{2,3|.|8}| id: 0} "];
 nodo18 [ label =" { A |{2|?|2}| id: 0} "];
-nodo17 [ label =" { N |{2|"-"|2}| id: 2} "];
+nodo17 [ label =" { N |{2|-|2}| id: 2} "];
 nodo18->nodo17
 nodo30->nodo18
 nodo29 [ label =" { N |{3|.|8}| id: 0} "];

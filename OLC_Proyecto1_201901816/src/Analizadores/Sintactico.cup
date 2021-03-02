@@ -4,30 +4,73 @@ import Application.*;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.BufferedWriter;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.nio.charset.Charset;
-import java.nio.charset.CharsetEncoder;
-import java.nio.charset.CodingErrorAction;
+import java.util.ArrayList;
+import java.util.List;
 
 parser code
 {:  
     public static int contId=1;
     public static Nodo Raiz;
     public static int num = 1;
-    public static void graficarArbol(Nodo act, String nombre){
+    public static List<TablaSiguientes> ListaSiguientes;
+
+    public static void graficarSiguientes(String nombre){
         FileWriter fichero = null;
         PrintWriter pw = null;
-        //String data;
-        //File archivo;
-        //FileOutputStream salida;
         try {
-            System.out.println("****************************");
+            fichero = new FileWriter("siguientes/" + nombre + ".dot");
+            pw = new PrintWriter(fichero);
+            pw.println("digraph G{");
+            pw.println("tbl [");
+            pw.println("shape=plaintext");
+            pw.println("label=<");
+            pw.println("<TABLE border=\"10\" cellspacing=\"10\" cellpadding=\"10\" style=\"rounded\" bgcolor=\"/rdylgn11/1:/rdylgn11/11\" gradientangle=\"315\">");
+            pw.println("<TR>");
+            pw.println("<TD border=\"3\" colspan=\"2\"  bgcolor=\"/rdylgn11/6:/rdylgn11/9\">Simbolos</TD>");
+            pw.println("<TD border=\"3\" colspan=\"2\"  bgcolor=\"/rdylgn11/9:/rdylgn11/11\">Siguientes</TD>");
+            pw.println("</TR>");
+
+            for (int i = 0; i < ListaSiguientes.size(); i++){
+                pw.println("<TR>");
+                pw.println("<TD border=\"3\" bgcolor=\"/rdylgn11/4:/rdylgn11/5\" gradientangle=\"270\">" + ListaSiguientes.get(i).id + "</TD>");
+                pw.println("<TD border=\"3\" bgcolor=\"/rdylgn11/3:/rdylgn11/9\" gradientangle=\"270\">" + ListaSiguientes.get(i).valor + "</TD>");
+                pw.println("<TD border=\"3\" colspan=\"2\"  bgcolor=\"/rdylgn11/1:/rdylgn11/8\">" + ListaSiguientes.get(i).siguientes + "</TD>");
+                pw.println("</TR>");
+            }
+
+            pw.println("</TABLE>");
+            pw.println(">];");
+            pw.println("}");
+        } catch (Exception e) {
+            System.out.println("error, no se realizo el archivo");
+        } finally {
+            try {
+                if (null != fichero) {
+                    fichero.close();
+                }
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+    }
+
+    public static void graficarArbol(Nodo act, String nombre){
+
+        System.out.println("****************************");
+        System.out.println("Tamanio de la lista es de: " + ListaSiguientes.size());
+        for (int i = 0; i < ListaSiguientes.size(); i++) {
+            if (ListaSiguientes.get(i).siguientes.size() == 0){
+                System.out.println(ListaSiguientes.get(i).id + " " + ListaSiguientes.get(i).valor);
+            } else {
+                System.out.println(ListaSiguientes.get(i).id + ", " + ListaSiguientes.get(i).valor + ", " + ListaSiguientes.get(i).siguientes);
+            }
+            
+        }
+
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        try {
             fichero = new FileWriter("arboles/" + nombre + ".dot");
-            //archivo = new File("arboles/" + nombre + ".dot");
             pw = new PrintWriter(fichero);
             pw.println("digraph G{");
             System.out.println("digraph G{");
@@ -46,19 +89,6 @@ parser code
             //data = data + act.getCodigoInterno();
             pw.println("}");
             System.out.println("}");
-            //data = data + "}";
-            //System.out.println(data);
-            //salida = new FileOutputStream(archivo);
-            //new OutputStreamWriter(archivo, "utf-8");
-            //CharsetEncoder encoder = Charset.forName("utf-8").newEncoder(); 
-            //encoder.onMalformedInput(CodingErrorAction.REPORT); 
-            //encoder.onUnmappableCharacter(CodingErrorAction.REPORT); 
-            //BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("arboles/" + nombre + ".dot"),encoder));
-            //out.write("verga de oso");
-            //out.close();
-            //byte[] txt = data.getBytes();
-            //salida.write(txt);
-            //out.write("data");
         } catch (Exception e) {
             System.out.println("error, no se realizo el archivo");
         } finally {
@@ -71,7 +101,7 @@ parser code
             }
         }
         //para compilar el archivo dot y obtener la imagen
-        try {
+        /*try {
             //dirección doonde se ecnuentra el compilador de graphviz
             String dotPath = "C:\\Program Files\\Graphviz\\bin\\dot.exe";
             //dirección del archivo dot
@@ -96,17 +126,15 @@ parser code
         } catch (Exception ex) {
             ex.printStackTrace();
         } finally {
-        }
+        }*/
     }
     //-----------------------------------------para errores sintacticos-------------------------------------------------------------------------------------------
     public void syntax_error(Symbol s)
     {
-        //System.err.println("Error en la Línea " + (s.right+1) +" Columna "+(s.left+1)+ ". Identificador "+s.value + " no reconocido. Se ha recuperado del error." );
         App.TxtSalida.append("Error en la Línea " + (s.right+1) +" Columna "+(s.left+1)+ ". Identificador "+s.value + " no reconocido. Se ha recuperado del error.\n" );
     }
     public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception
     {
-        //System.err.println("Error en la Línea " + (s.right+1)+ " Columna "+(s.left+1)+". Identificador " +s.value + " no reconocido.");
         App.TxtSalida.append("Error en la Línea " + (s.right+1)+ " Columna "+(s.left+1)+". Identificador " +s.value + " no reconocido.\n");
     }
     //-------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -117,25 +145,60 @@ action code {:
 
 // terminal [Tipo] listaterminales;
 terminal String TKParA, TKParC, TKComa, TKBarra, TKPunto, TKMas, TKAsterisco, TKPorcentaje, TKPuntoComa, TKInterrogacion, TKColocho;
-terminal String TKConj, TKDosPuntos, cadena, caracterespecial, entero, identificador, TKGuion, TKMayor, conjunto, conjuntoExp, id;
+terminal String TKConj, TKDosPuntos, cadena, caracterespecial, entero, identificador, TKGuion, TKMayor;
+terminal String C33, C36, C35, C38, C40, C41, C47, C60, C61, C64, C91, C93, C94, C95, C96; 
 // non terminal [Tipo] listanoterminales;
-non terminal String INICIO, CUERPO, CONJUNTO, SINGULARES, EXPRESION, DEFINICION;
+non terminal String INICIO, CUERPO, CONJUNTO, EXPRESION, DEFINICION, ASCII, CONJUNTOLARGO;
 non terminal Nodo ARBOL, HOJAS;
 
 
 start with INICIO;
 
-//INICIO ::= INICIO TKComa identificador{:System.out.println("HOLA");:}
-//        | identificador{::};
-
-
-INICIO ::= TKParA CUERPO EXPRESION TKPorcentaje TKPorcentaje TKPorcentaje TKPorcentaje DEFINICION TKParC {:System.err.println("CORRECTO");:};
+INICIO ::= TKParA CUERPO EXPRESION TKPorcentaje TKPorcentaje TKPorcentaje TKPorcentaje DEFINICION TKParC {:
+    App.TxtSalida.append("El archivo se ha leido correctamente.\n");
+:};
 
 CUERPO ::= TKConj TKDosPuntos identificador TKGuion TKMayor CONJUNTO TKPuntoComa{::}
         | CUERPO TKConj TKDosPuntos identificador TKGuion TKMayor CONJUNTO TKPuntoComa{::};
 
-CONJUNTO ::= conjunto{::}
-            | conjuntoExp{::};
+CONJUNTO ::= ASCII TKColocho ASCII{::}
+            | CONJUNTOLARGO{::};
+
+CONJUNTOLARGO ::= CONJUNTOLARGO TKComa ASCII{::}
+                | ASCII{::};
+
+ASCII ::= identificador
+        | C33
+        | C35
+        | C36
+        | TKPorcentaje
+        | C38
+        | C40
+        | C41
+        | TKAsterisco
+        | TKMas
+        | TKComa
+        | TKGuion
+        | TKPunto
+        | C47
+        | entero
+        | TKDosPuntos
+        | TKPuntoComa
+        | C60
+        | C61
+        | TKMayor
+        | TKInterrogacion
+        | C64
+        | C91
+        | C93
+        | C94
+        | C95
+        | C96
+        | TKParA
+        | TKBarra
+        | TKParC
+        | caracterespecial
+;
 
 EXPRESION ::= identificador:nombre TKGuion TKMayor ARBOL:valor TKPuntoComa{:
                 //PARA EL CALCULO DE PRIMEROS
@@ -144,7 +207,16 @@ EXPRESION ::= identificador:nombre TKGuion TKMayor ARBOL:valor TKPuntoComa{:
                 //PARA EL CALCULO DE ULTIMOS
                 int[] ultimos1 = new int[1];
                 ultimos1[0] = parser.num;
+                //CREAMOS EL NODO
                 Nodo fin = new Nodo(null, null, "#", parser.contId,parser.num, "N", primeros1, ultimos1);
+                //CALCULO DE SIGUIENTES
+                TablaSiguientes elemento = new TablaSiguientes(parser.num, null, "#");
+                if (parser.ListaSiguientes == null){
+                    ListaSiguientes = new ArrayList<TablaSiguientes>();
+                    parser.ListaSiguientes.add(elemento);
+                } else {
+                    parser.ListaSiguientes.add(elemento);
+                }
                 parser.contId++;
 
                 //PARA EL CALCULO DE PRIMEROS
@@ -186,14 +258,28 @@ EXPRESION ::= identificador:nombre TKGuion TKMayor ARBOL:valor TKPuntoComa{:
                 } else {
                     anulable = "N";
                 }
-                
+                //CREAMOS EL NODO
                 Nodo raiz = new Nodo(valor, fin, ".", parser.contId,0, anulable, primeros, ultimos);
                 parser.Raiz = raiz;
                 
-                System.err.println("hola bb");
+                //CALCULO DE SIGUIENTES
+                int[] ultimosC1 = valor.ultimos;
+                int[] primerosC2 = fin.primeros;
+                for (int i = 0; i < ultimosC1.length; i++){
+                    //SABEMOS QUE ES EN LISTASIGUIENTES EN I
+                    int temp = ultimosC1[i];
+                    for (int j = 0; j < primerosC2.length; j++){
+                        int nuevo = primerosC2[j];
+                        if (parser.ListaSiguientes.get(temp-1).siguientes.contains(nuevo) == false){
+                            ListaSiguientes.get(temp-1).siguientes.add(nuevo);
+                        }
+                    }
+                }
 
+                graficarSiguientes(nombre);
                 graficarArbol(raiz, nombre);
                 parser.num = 1;
+                parser.ListaSiguientes.clear();
             :}
             | EXPRESION identificador:nombre TKGuion TKMayor ARBOL:valor TKPuntoComa{:
                 //PARA EL CALCULO DE PRIMEROS
@@ -202,7 +288,16 @@ EXPRESION ::= identificador:nombre TKGuion TKMayor ARBOL:valor TKPuntoComa{:
                 //PARA EL CALCULO DE ULTIMOS
                 int[] ultimos1 = new int[1];
                 ultimos1[0] = parser.num;
+                //CREAMOS EL NODO
                 Nodo fin = new Nodo(null, null, "#", parser.contId,parser.num, "N", primeros1, ultimos1);
+                //CALCULO DE SIGUIENTES
+                TablaSiguientes elemento = new TablaSiguientes(parser.num, null, "#");
+                if (parser.ListaSiguientes == null){
+                    ListaSiguientes = new ArrayList<TablaSiguientes>();
+                    parser.ListaSiguientes.add(elemento);
+                } else {
+                    parser.ListaSiguientes.add(elemento);
+                }
                 parser.contId++;
 
                 //PARA EL CALCULO DE PRIMEROS
@@ -244,14 +339,27 @@ EXPRESION ::= identificador:nombre TKGuion TKMayor ARBOL:valor TKPuntoComa{:
                 } else {
                     anulable = "N";
                 }
-                
+                //CREAMOS EL NODO
                 Nodo raiz = new Nodo(valor, fin, ".", parser.contId,0, anulable, primeros, ultimos);
                 parser.Raiz = raiz;
                 
-                System.err.println("hola bb");
-
+                //CALCULO DE SIGUIENTES
+                int[] ultimosC1 = valor.ultimos;
+                int[] primerosC2 = fin.primeros;
+                for (int i = 0; i < ultimosC1.length; i++){
+                    //SABEMOS QUE ES EN LISTASIGUIENTES EN I
+                    int temp = ultimosC1[i];
+                    for (int j = 0; j < primerosC2.length; j++){
+                        int nuevo = primerosC2[j];
+                        if (parser.ListaSiguientes.get(temp-1).siguientes.contains(nuevo) == false){
+                            ListaSiguientes.get(temp-1).siguientes.add(nuevo);
+                        }
+                    }
+                }
+                graficarSiguientes(nombre);
                 graficarArbol(raiz, nombre);
                 parser.num = 1;
+                parser.ListaSiguientes.clear();
             :};
 
 ARBOL ::= TKPunto ARBOL:a ARBOL:b{:
@@ -296,10 +404,25 @@ ARBOL ::= TKPunto ARBOL:a ARBOL:b{:
             } else {
                 anulable = "N";
             }
+            //CREAMOS EL NODO
             Nodo NuevoPadre = new Nodo(a,b,".",parser.contId,0, anulable, primeros, ultimos);
+            //CALCULO DE SIGUIENTES
+            int[] ultimosC1 = a.ultimos;
+            int[] primerosC2 = b.primeros;
+            for (int i = 0; i < ultimosC1.length; i++){
+                //SABEMOS QUE ES EN LISTASIGUIENTES EN I
+                int temp = ultimosC1[i];
+                for (int j = 0; j < primerosC2.length; j++){
+                    int nuevo = primerosC2[j];
+                    if (parser.ListaSiguientes.get(temp-1).siguientes.contains(nuevo) == false){
+                        ListaSiguientes.get(temp-1).siguientes.add(nuevo);
+                    }
+                }
+            }
+            //ITERAMOS
             parser.contId++;
             RESULT = NuevoPadre;
-        :}
+:}
         | TKBarra ARBOL:a ARBOL:b{:
             //PARA EL CALCULO DE PRIMEROS
             int[] primeros = new int[a.primeros.length + b.primeros.length];
@@ -330,6 +453,7 @@ ARBOL ::= TKPunto ARBOL:a ARBOL:b{:
             } else {
                 anulable = "N";
             }
+            //CREAMOS EL NODO
             Nodo NuevoPadre = new Nodo(a,b,"\\|",parser.contId,0, anulable, primeros, ultimos);
             parser.contId++;
             RESULT = NuevoPadre;
@@ -339,7 +463,22 @@ ARBOL ::= TKPunto ARBOL:a ARBOL:b{:
             int[] primeros = a.primeros;
             //CALCULOS DE ULTIMOS
             int[] ultimos = a.ultimos;
+            //CREAMOS EL NODO
             Nodo NuevoPadre = new Nodo(a,null,"*",parser.contId,0, "A", primeros, ultimos);
+            //CALCULO DE SIGUIENTES
+            int[] ultimosC1 = a.ultimos;
+            int[] primerosC1 = a.primeros;
+            for (int i = 0; i < ultimosC1.length; i++){
+                //SABEMOS QUE ES EN LISTASIGUIENTES EN I
+                int temp = ultimosC1[i];
+                for (int j = 0; j < primerosC1.length; j++){
+                    int nuevo = primerosC1[j];
+                    if (parser.ListaSiguientes.get(temp-1).siguientes.contains(nuevo) == false){
+                        ListaSiguientes.get(temp-1).siguientes.add(nuevo);
+                    }
+                }
+            }
+            //ITERAMOS
             parser.contId++;
             RESULT = NuevoPadre;
         :}
@@ -355,7 +494,22 @@ ARBOL ::= TKPunto ARBOL:a ARBOL:b{:
             } else {
                 anulable = "A";
             }
+            //CREAMOS EL NODO
             Nodo NuevoPadre = new Nodo(a,null,"+",parser.contId,0, anulable, primeros, ultimos);
+            //CALCULO DE SIGUIENTES
+            int[] ultimosC1 = a.ultimos;
+            int[] primerosC1 = a.primeros;
+            for (int i = 0; i < ultimosC1.length; i++){
+                //SABEMOS QUE ES EN LISTASIGUIENTES EN I
+                int temp = ultimosC1[i];
+                for (int j = 0; j < primerosC1.length; j++){
+                    int nuevo = primerosC1[j];
+                    if (parser.ListaSiguientes.get(temp-1).siguientes.contains(nuevo) == false){
+                        ListaSiguientes.get(temp-1).siguientes.add(nuevo);
+                    }
+                }
+            }
+            //ITERAMOS
             parser.contId++;
             RESULT = NuevoPadre;
         :}
@@ -364,6 +518,7 @@ ARBOL ::= TKPunto ARBOL:a ARBOL:b{:
             int[] primeros = a.primeros;
             //CALCULOS DE ULTIMOS
             int[] ultimos = a.ultimos;
+            //CREAMOS EL NODO
             Nodo NuevoPadre = new Nodo(a,null,"?",parser.contId,0, "A", primeros, ultimos);
             parser.contId++;
             RESULT = NuevoPadre;
@@ -379,7 +534,17 @@ HOJAS ::= TKParA:val0 identificador:val TKParC:val1{:
             //PARA EL CALCULO DE PRIMEROS
             int[] ultimos = new int[1];
             ultimos[0] = parser.num;
+            //CREAMOS EL NODO
             Nodo NuevaHoja = new Nodo(null,null,val0+val+val1,parser.contId,parser.num, "N", primeros, ultimos);
+            //CALCULO DE SIGUIENTES
+            TablaSiguientes elemento = new TablaSiguientes(parser.num, null, val);
+            if (parser.ListaSiguientes == null){
+                ListaSiguientes = new ArrayList<TablaSiguientes>();
+                parser.ListaSiguientes.add(elemento);
+            } else {
+                parser.ListaSiguientes.add(elemento);
+            }
+            //ITERAMOS
             parser.contId++;
             parser.num++;
             RESULT = NuevaHoja;
@@ -391,27 +556,40 @@ HOJAS ::= TKParA:val0 identificador:val TKParC:val1{:
             //PARA EL CALCULO DE PRIMEROS
             int[] ultimos = new int[1];
             ultimos[0] = parser.num;
+            //CREAMOS EL NODO
             Nodo NuevaHoja = new Nodo(null,null,val,parser.contId,parser.num, "N", primeros, ultimos);
+            //CALCULO DE SIGUIENTES
+            TablaSiguientes elemento = new TablaSiguientes(parser.num, null, val);
+            if (parser.ListaSiguientes == null){
+                ListaSiguientes = new ArrayList<TablaSiguientes>();
+                parser.ListaSiguientes.add(elemento);
+            } else {
+                parser.ListaSiguientes.add(elemento);
+            }
+            //ITERAMOS
             parser.contId++;
             parser.num++;
             RESULT = NuevaHoja;
         :}
         | cadena:val{:
-            //String caracter = val.substring(1,1);
-            /*String cadena = "";
-            for (int i = 0; i<val.length(); i++){
-                if (val.charAt(i) != '"'){
-                    cadena = cadena + val.charAt(i);
-                }
-            }*/
-
+            String caracter = val.replace("\"", "");
             //PARA EL CALCULO DE PRIMEROS
             int[] primeros = new int[1];
             primeros[0] = parser.num;
             //PARA EL CALCULO DE PRIMEROS
             int[] ultimos = new int[1];
             ultimos[0] = parser.num;
-            Nodo NuevaHoja = new Nodo(null,null,val,parser.contId,parser.num, "N", primeros, ultimos);
+            //CREAMOS EL NODO
+            Nodo NuevaHoja = new Nodo(null,null,caracter,parser.contId,parser.num, "N", primeros, ultimos);
+            //CALCULO DE SIGUIENTES
+            TablaSiguientes elemento = new TablaSiguientes(parser.num, null, caracter);
+            if (parser.ListaSiguientes == null){
+                ListaSiguientes = new ArrayList<TablaSiguientes>();
+                parser.ListaSiguientes.add(elemento);
+            } else {
+                parser.ListaSiguientes.add(elemento);
+            }
+            //ITERAMOS
             parser.contId++;
             parser.num++;
             RESULT = NuevaHoja;

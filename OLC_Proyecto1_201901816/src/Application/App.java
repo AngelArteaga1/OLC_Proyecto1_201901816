@@ -357,11 +357,9 @@ public class App extends javax.swing.JFrame {
         TxtSalida.setText("");
         try {
             String path = TxtEntrada.getText();
-            //System.out.println(path);
             Analizadores.parser sintactico;
             sintactico = new Analizadores.parser(new Analizadores.Lexico(new StringReader(path)));
             sintactico.parse();
-            //txtSalida.setText(list_of_names);
         } catch (Exception e) {
         }
     }//GEN-LAST:event_jButton1ActionPerformed

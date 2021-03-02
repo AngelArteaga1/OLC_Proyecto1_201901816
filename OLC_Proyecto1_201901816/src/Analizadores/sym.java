@@ -8,30 +8,42 @@ package Analizadores;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int conjuntoExp = 22;
-  public static final int TKConj = 13;
-  public static final int TKAsterisco = 8;
-  public static final int conjunto = 21;
-  public static final int cadena = 15;
+  public static final int C38 = 24;
   public static final int TKMas = 7;
+  public static final int C36 = 22;
+  public static final int C35 = 23;
+  public static final int C33 = 21;
+  public static final int C96 = 35;
+  public static final int C64 = 30;
+  public static final int C95 = 34;
+  public static final int C94 = 33;
+  public static final int C61 = 29;
+  public static final int C93 = 32;
+  public static final int C60 = 28;
+  public static final int C91 = 31;
   public static final int caracterespecial = 16;
-  public static final int TKGuion = 19;
-  public static final int TKParC = 3;
-  public static final int TKPunto = 6;
-  public static final int TKParA = 2;
-  public static final int TKDosPuntos = 14;
-  public static final int TKPuntoComa = 10;
-  public static final int EOF = 0;
-  public static final int id = 23;
-  public static final int TKColocho = 12;
-  public static final int TKBarra = 5;
-  public static final int TKInterrogacion = 11;
-  public static final int error = 1;
-  public static final int entero = 17;
-  public static final int TKComa = 4;
   public static final int TKMayor = 20;
-  public static final int TKPorcentaje = 9;
   public static final int identificador = 18;
+  public static final int TKBarra = 5;
+  public static final int TKPunto = 6;
+  public static final int TKPuntoComa = 10;
+  public static final int TKAsterisco = 8;
+  public static final int TKConj = 13;
+  public static final int EOF = 0;
+  public static final int error = 1;
+  public static final int TKParC = 3;
+  public static final int TKColocho = 12;
+  public static final int TKParA = 2;
+  public static final int entero = 17;
+  public static final int TKInterrogacion = 11;
+  public static final int C47 = 27;
+  public static final int C41 = 26;
+  public static final int C40 = 25;
+  public static final int TKDosPuntos = 14;
+  public static final int TKPorcentaje = 9;
+  public static final int TKComa = 4;
+  public static final int TKGuion = 19;
+  public static final int cadena = 15;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -54,9 +66,21 @@ public class sym {
   "identificador",
   "TKGuion",
   "TKMayor",
-  "conjunto",
-  "conjuntoExp",
-  "id"
+  "C33",
+  "C36",
+  "C35",
+  "C38",
+  "C40",
+  "C41",
+  "C47",
+  "C60",
+  "C61",
+  "C64",
+  "C91",
+  "C93",
+  "C94",
+  "C95",
+  "C96"
   };
 }
 

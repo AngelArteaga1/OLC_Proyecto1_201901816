@@ -23,7 +23,7 @@ nodo8->nodo6
 nodo7 [ label =" { N |{5|{digito}|5}| id: 5} "];
 nodo8->nodo7
 nodo10->nodo8
-nodo9 [ label =" { N |{6|" "|6}| id: 6} "];
+nodo9 [ label =" { N |{6| |6}| id: 6} "];
 nodo10->nodo9
 nodo11->nodo10
 nodo13->nodo11

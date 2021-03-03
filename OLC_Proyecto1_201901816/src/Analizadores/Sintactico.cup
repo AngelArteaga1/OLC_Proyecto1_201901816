@@ -12,7 +12,191 @@ parser code
     public static int contId=1;
     public static Nodo Raiz;
     public static int num = 1;
+    public static int contCon = 0;
+    public static int contEs = 0;
     public static List<TablaSiguientes> ListaSiguientes;
+    public static List<Estado> estados;
+    public static List<Integer> ListaAuxiliar;
+    public static int[][] Transiciones;
+    public static List<String> conjuntos;
+
+    public static boolean Equals(List<Integer> lista1, List<Integer> lista2){
+        if (lista1.size() != lista2.size()){
+            return false;
+        } else {
+            for (int i = 0; i < lista1.size(); i++){
+                if (lista1.get(i) != lista2.get(i)){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public static void CrearEstados(Estado S){
+        boolean encontrado = false;
+        for (int i = 0; i < S.combinacion.size(); i++){
+            int aux = S.combinacion.get(i);
+            //VALIDAR SI LA CONBINACION ES LA MISMA
+            for ( int j = 0; j < estados.size(); j++){
+                if (Equals(estados.get(j).combinacion, ListaSiguientes.get(aux-1).siguientes) == true){
+                    encontrado = true;
+                }
+            }
+            if (encontrado == false){
+                Estado nuevo = new Estado(contEs, ListaSiguientes.get(aux-1).siguientes);
+                estados.add(nuevo);
+                contEs++;
+                CrearEstados(nuevo);
+            }
+            encontrado = false;
+        }
+    }
+
+    public static void graficarTransiciones(int[] anteriores, String nombre){
+        System.out.println("ESTOS SON LOS ESTADOS QUE LOGRÉ CREAR:");
+        //PASAMOS EL ARRAY A UNA LISTA
+        contEs = 0;
+        List<Integer> anterioresList = new ArrayList<Integer>();
+        ListaAuxiliar = new ArrayList<Integer>();
+        for (int i = 0; i < anteriores.length; i++){
+            anterioresList.add(anteriores[i]);
+        }
+        estados = new ArrayList<Estado>();
+        Estado inicial = new Estado(contEs, anterioresList);
+        estados.add(inicial);
+        contEs++;
+        //CREAMOS LOS LOS POSIBLES ESTADOS
+        CrearEstados(inicial);
+        for (int i = 0; i < estados.size(); i++){
+            System.out.println(estados.get(i).S + ", " + estados.get(i).combinacion);
+        }
+
+        //CREAMOS LA LISTA DE CONJUNTOS
+        conjuntos = new ArrayList<String>();
+        for (int i = 0; i < ListaSiguientes.size(); i++){
+            if (conjuntos.contains(ListaSiguientes.get(i).valor) == false){
+                conjuntos.add(ListaSiguientes.get(i).valor);
+            }
+        }
+        System.out.println(conjuntos);
+
+        //CREAMOS LA MATRIZ DE TRANSICIONES
+        Transiciones = new int[estados.size()][conjuntos.size()];
+        for (int i = 0; i < estados.size(); i++){
+            for  ( int j = 0; j < conjuntos.size(); j++){
+                Transiciones[i][j] = -1;
+            }
+        }
+        //INGRESAMOS LOS DATOS A LA MATRIZ
+        
+        try{
+            //recorremos la lista de estados encontrados
+            for (int i = 0; i < estados.size(); i++){
+                System.out.println("***********************************************");
+                System.out.println("EMPIEZO A RECORRER ESTADO: " + estados.get(i).S);
+                //recorremos las combinaciones del estado actual
+                for (int j = 0; j < estados.get(i).combinacion.size(); j++){
+                    System.out.println("EMPIEZO A RECORRER COMBINACION: " + estados.get(i).combinacion.get(j));
+                    //obtenemos el indice de esa combinacion
+                    int indice = estados.get(i).combinacion.get(j);
+                    //obtenemos el string del conjunto de ese indice
+                    String conjunto = GetCadenaConjunto(indice);
+                    System.out.println("ESTE ES EL CONJUNTO DE ESTA COMBINACION: " + conjunto);
+                    //recorreremos la lista de estados nuevamente
+                    for (int k = 0; k < estados.size(); k++){
+                        //sera igual al estado que tenga la misma combinacion para obtener el estado
+                        if (Equals(estados.get(k).combinacion, ListaSiguientes.get(indice - 1).siguientes)){
+                            System.out.println("LOS SIGUIENTES DE ESE CONJUNTO SON: " + ListaSiguientes.get(indice-1).siguientes);
+                            Transiciones[i][GetConjunto(conjunto)] = estados.get(k).S;
+                        }
+                    }
+                }
+            }
+
+        }catch(Exception e){
+            System.err.println(e);
+        }
+
+        //IMPRIMIENDO LA MATRIZ
+        for (int i = 0; i < estados.size(); i++){
+            System.out.println("");
+            for  ( int j = 0; j < conjuntos.size(); j++){
+                System.out.print(Transiciones[i][j] + ", ");
+            }
+        }
+
+        //EMPEZAMOS A GRAFICAR
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        try {
+            fichero = new FileWriter("Transiciones/" + nombre + ".dot");
+            pw = new PrintWriter(fichero);
+            pw.println("digraph G{");
+            pw.println("tbl [");
+            pw.println("shape=plaintext");
+            pw.println("label=<");
+            pw.println("<TABLE border=\"10\" cellspacing=\"10\" cellpadding=\"10\" style=\"rounded\" bgcolor=\"/rdylgn11/1:/rdylgn11/11\" gradientangle=\"315\">");
+            //PARA CREAR LA PRIMERA FILA
+            pw.println("<TR>");
+            pw.println("<TD border=\"3\" colspan=\"2\"  bgcolor=\"/rdylgn11/6:/rdylgn11/9\">Estados</TD>");
+            for (int i = 0; i < conjuntos.size() - 1; i++){
+                pw.println("<TD border=\"3\"  bgcolor=\"/rdylgn11/2:/rdylgn11/3\">" + conjuntos.get(i) + "</TD>");
+            }
+            pw.println("</TR>");
+            //PARA CREAR TODAS LAS SITUACIONES
+            for (int i = 0; i < estados.size() - 1; i++){
+                pw.println("<TR>");
+                pw.println("<TD border=\"3\" bgcolor=\"/rdylgn11/4:/rdylgn11/5\" gradientangle=\"270\">S" + estados.get(i).S + "</TD>");
+                pw.println("<TD border=\"3\" bgcolor=\"/rdylgn11/3:/rdylgn11/9\" gradientangle=\"270\">" + estados.get(i).combinacion + "</TD>");
+                for (int j = 0; j < conjuntos.size() - 1; j++){
+                    if (Transiciones[i][j] == -1){
+                        pw.println("<TD border=\"3\"  bgcolor=\"/rdylgn11/1:/rdylgn11/8\">---</TD>");
+                    } else {
+                        pw.println("<TD border=\"3\"  bgcolor=\"/rdylgn11/1:/rdylgn11/8\">S" + Transiciones[i][j] + "</TD>");
+                    }
+                }
+                pw.println("</TR>");
+            }
+
+            pw.println("</TABLE>");
+            pw.println(">];");
+            pw.println("}");
+        } catch (Exception e) {
+            System.out.println("error, no se realizo el archivo");
+        } finally {
+            try {
+                if (null != fichero) {
+                    fichero.close();
+                }
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+
+
+
+    }
+
+    public static String GetCadenaConjunto(int indice){
+        //System.out.println("**********************************************************************");
+        //System.out.println("INDICE: " + indice + " VALOR: " + ListaSiguientes.get(indice - 1).valor);
+        return ListaSiguientes.get(indice - 1).valor;
+    }
+
+    public static int GetConjunto (String conjunto){
+        //System.out.println("*********************************************************************");
+        int indice = -1;
+        for (int i = 0; i < conjuntos.size(); i++){
+            //System.out.println(conjuntos.get(i) + "<->" + conjunto);
+            if ((conjuntos.get(i)).contains(conjunto) || conjunto.contains(conjuntos.get(i))){
+                //System.out.println("LO ENCONTRE PAPA");
+                return i;
+            }
+        }
+        System.out.println("CONJUNTO: " + conjunto + " INDICE: " + indice);
+        return indice;
+    }
 
     public static void graficarSiguientes(String nombre){
         FileWriter fichero = null;
@@ -56,7 +240,7 @@ parser code
 
     public static void graficarArbol(Nodo act, String nombre){
 
-        System.out.println("****************************");
+        System.out.println("****************************************************");
         System.out.println("Tamanio de la lista es de: " + ListaSiguientes.size());
         for (int i = 0; i < ListaSiguientes.size(); i++) {
             if (ListaSiguientes.get(i).siguientes.size() == 0){
@@ -73,22 +257,22 @@ parser code
             fichero = new FileWriter("arboles/" + nombre + ".dot");
             pw = new PrintWriter(fichero);
             pw.println("digraph G{");
-            System.out.println("digraph G{");
+            //System.out.println("digraph G{");
             //data = "digraph G{\n";
             pw.println("rankdir=UD");
-            System.out.println("rankdir=UD");
+            //System.out.println("rankdir=UD");
             //data = data + "rankdir=UD\n";
             pw.println("node[shape=record]");
-            System.out.println("node[shape=record]");
+            //System.out.println("node[shape=record]");
             //data = data + "node[shape=box]\n";
             pw.println("concentrate=true");
-            System.out.println("concentrate=true");
+            //System.out.println("concentrate=true");
             //data = data + "concentrate=true\n";
             pw.println(act.getCodigoInterno());
-            System.out.println(act.getCodigoInterno());
+            //System.out.println(act.getCodigoInterno());
             //data = data + act.getCodigoInterno();
             pw.println("}");
-            System.out.println("}");
+            //System.out.println("}");
         } catch (Exception e) {
             System.out.println("error, no se realizo el archivo");
         } finally {
@@ -158,8 +342,12 @@ INICIO ::= TKParA CUERPO EXPRESION TKPorcentaje TKPorcentaje TKPorcentaje TKPorc
     App.TxtSalida.append("El archivo se ha leido correctamente.\n");
 :};
 
-CUERPO ::= TKConj TKDosPuntos identificador TKGuion TKMayor CONJUNTO TKPuntoComa{::}
-        | CUERPO TKConj TKDosPuntos identificador TKGuion TKMayor CONJUNTO TKPuntoComa{::};
+CUERPO ::= TKConj TKDosPuntos identificador:conjunto TKGuion TKMayor CONJUNTO TKPuntoComa{:
+    parser.contCon++;
+:}
+        | CUERPO TKConj TKDosPuntos identificador:conjunto TKGuion TKMayor CONJUNTO TKPuntoComa{:
+            parser.contCon++;
+        :};
 
 CONJUNTO ::= ASCII TKColocho ASCII{::}
             | CONJUNTOLARGO{::};
@@ -276,11 +464,12 @@ EXPRESION ::= identificador:nombre TKGuion TKMayor ARBOL:valor TKPuntoComa{:
                     }
                 }
 
-                graficarSiguientes(nombre);
                 graficarArbol(raiz, nombre);
+                graficarSiguientes(nombre);
+                graficarTransiciones(raiz.primeros, nombre);
                 parser.num = 1;
                 parser.ListaSiguientes.clear();
-            :}
+:}
             | EXPRESION identificador:nombre TKGuion TKMayor ARBOL:valor TKPuntoComa{:
                 //PARA EL CALCULO DE PRIMEROS
                 int[] primeros1 = new int[1];
@@ -356,8 +545,9 @@ EXPRESION ::= identificador:nombre TKGuion TKMayor ARBOL:valor TKPuntoComa{:
                         }
                     }
                 }
-                graficarSiguientes(nombre);
                 graficarArbol(raiz, nombre);
+                graficarSiguientes(nombre);
+                graficarTransiciones(raiz.primeros, nombre);
                 parser.num = 1;
                 parser.ListaSiguientes.clear();
             :};
@@ -569,6 +759,7 @@ HOJAS ::= TKParA:val0 identificador:val TKParC:val1{:
             //ITERAMOS
             parser.contId++;
             parser.num++;
+            parser.contCon++;
             RESULT = NuevaHoja;
         :}
         | cadena:val{:
@@ -592,6 +783,7 @@ HOJAS ::= TKParA:val0 identificador:val TKParC:val1{:
             //ITERAMOS
             parser.contId++;
             parser.num++;
+            parser.contCon++;
             RESULT = NuevaHoja;
         :};
 

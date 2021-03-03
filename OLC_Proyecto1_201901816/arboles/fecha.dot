@@ -2,46 +2,46 @@ digraph G{
 rankdir=UD
 node[shape=record]
 concentrate=true
-nodo36 [ label =" { N |{1|.|11}| id: 0} "];
-nodo34 [ label =" { N |{1|.|10}| id: 0} "];
-nodo16 [ label =" { N |{1|{num}|1}| id: 1} "];
-nodo34->nodo16
-nodo33 [ label =" { N |{2|.|10}| id: 0} "];
-nodo17 [ label =" { N |{2|{num}|2}| id: 2} "];
-nodo33->nodo17
-nodo32 [ label =" { N |{3|.|10}| id: 0} "];
-nodo18 [ label =" { N |{3|/|3}| id: 3} "];
-nodo32->nodo18
-nodo31 [ label =" { N |{4|.|10}| id: 0} "];
-nodo19 [ label =" { N |{4|{num}|4}| id: 4} "];
-nodo31->nodo19
-nodo30 [ label =" { N |{5|.|10}| id: 0} "];
-nodo20 [ label =" { N |{5|{num}|5}| id: 5} "];
-nodo30->nodo20
-nodo29 [ label =" { N |{6|.|10}| id: 0} "];
-nodo21 [ label =" { N |{6|/|6}| id: 6} "];
-nodo29->nodo21
-nodo28 [ label =" { N |{7|.|10}| id: 0} "];
-nodo22 [ label =" { N |{7|{num}|7}| id: 7} "];
-nodo28->nodo22
-nodo27 [ label =" { N |{8|.|10}| id: 0} "];
-nodo23 [ label =" { N |{8|{num}|8}| id: 8} "];
-nodo27->nodo23
-nodo26 [ label =" { N |{9|.|10}| id: 0} "];
-nodo24 [ label =" { N |{9|{num}|9}| id: 9} "];
-nodo26->nodo24
-nodo25 [ label =" { N |{10|{num}|10}| id: 10} "];
-nodo26->nodo25
-nodo27->nodo26
-nodo28->nodo27
-nodo29->nodo28
-nodo30->nodo29
-nodo31->nodo30
-nodo32->nodo31
-nodo33->nodo32
-nodo34->nodo33
-nodo36->nodo34
-nodo35 [ label =" { N |{11|#|11}| id: 11} "];
-nodo36->nodo35
+nodo68 [ label =" { N |{1|.|11}| id: 0} "];
+nodo66 [ label =" { N |{1|.|10}| id: 0} "];
+nodo48 [ label =" { N |{1|{num}|1}| id: 1} "];
+nodo66->nodo48
+nodo65 [ label =" { N |{2|.|10}| id: 0} "];
+nodo49 [ label =" { N |{2|{num}|2}| id: 2} "];
+nodo65->nodo49
+nodo64 [ label =" { N |{3|.|10}| id: 0} "];
+nodo50 [ label =" { N |{3|/|3}| id: 3} "];
+nodo64->nodo50
+nodo63 [ label =" { N |{4|.|10}| id: 0} "];
+nodo51 [ label =" { N |{4|{num}|4}| id: 4} "];
+nodo63->nodo51
+nodo62 [ label =" { N |{5|.|10}| id: 0} "];
+nodo52 [ label =" { N |{5|{num}|5}| id: 5} "];
+nodo62->nodo52
+nodo61 [ label =" { N |{6|.|10}| id: 0} "];
+nodo53 [ label =" { N |{6|/|6}| id: 6} "];
+nodo61->nodo53
+nodo60 [ label =" { N |{7|.|10}| id: 0} "];
+nodo54 [ label =" { N |{7|{num}|7}| id: 7} "];
+nodo60->nodo54
+nodo59 [ label =" { N |{8|.|10}| id: 0} "];
+nodo55 [ label =" { N |{8|{num}|8}| id: 8} "];
+nodo59->nodo55
+nodo58 [ label =" { N |{9|.|10}| id: 0} "];
+nodo56 [ label =" { N |{9|{num}|9}| id: 9} "];
+nodo58->nodo56
+nodo57 [ label =" { N |{10|{num}|10}| id: 10} "];
+nodo58->nodo57
+nodo59->nodo58
+nodo60->nodo59
+nodo61->nodo60
+nodo62->nodo61
+nodo63->nodo62
+nodo64->nodo63
+nodo65->nodo64
+nodo66->nodo65
+nodo68->nodo66
+nodo67 [ label =" { N |{11|#|11}| id: 11} "];
+nodo68->nodo67
 
 }

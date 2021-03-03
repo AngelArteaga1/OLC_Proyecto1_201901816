@@ -2,24 +2,24 @@ digraph G{
 rankdir=UD
 node[shape=record]
 concentrate=true
-nodo53 [ label =" { N |{1|.|5}| id: 0} "];
-nodo51 [ label =" { N |{1|.|1,2,3,4}| id: 0} "];
-nodo44 [ label =" { N |{1|{letra}|1}| id: 1} "];
-nodo51->nodo44
-nodo50 [ label =" { A |{2,3,4|*|2,3,4}| id: 0} "];
-nodo49 [ label =" { N |{2,3,4|\||2,3,4}| id: 0} "];
-nodo45 [ label =" { N |{2|_|2}| id: 2} "];
-nodo49->nodo45
-nodo48 [ label =" { N |{3,4|\||3,4}| id: 0} "];
-nodo46 [ label =" { N |{3|{letra}|3}| id: 3} "];
-nodo48->nodo46
-nodo47 [ label =" { N |{4|{digito}|4}| id: 4} "];
-nodo48->nodo47
-nodo49->nodo48
-nodo50->nodo49
-nodo51->nodo50
-nodo53->nodo51
-nodo52 [ label =" { N |{5|#|5}| id: 5} "];
-nodo53->nodo52
+nodo85 [ label =" { N |{1|.|5}| id: 0} "];
+nodo83 [ label =" { N |{1|.|1,2,3,4}| id: 0} "];
+nodo76 [ label =" { N |{1|{letra}|1}| id: 1} "];
+nodo83->nodo76
+nodo82 [ label =" { A |{2,3,4|*|2,3,4}| id: 0} "];
+nodo81 [ label =" { N |{2,3,4|\||2,3,4}| id: 0} "];
+nodo77 [ label =" { N |{2|_|2}| id: 2} "];
+nodo81->nodo77
+nodo80 [ label =" { N |{3,4|\||3,4}| id: 0} "];
+nodo78 [ label =" { N |{3|{letra}|3}| id: 3} "];
+nodo80->nodo78
+nodo79 [ label =" { N |{4|{digito}|4}| id: 4} "];
+nodo80->nodo79
+nodo81->nodo80
+nodo82->nodo81
+nodo83->nodo82
+nodo85->nodo83
+nodo84 [ label =" { N |{5|#|5}| id: 5} "];
+nodo85->nodo84
 
 }

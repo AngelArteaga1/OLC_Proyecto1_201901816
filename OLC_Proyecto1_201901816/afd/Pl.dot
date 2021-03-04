@@ -1,0 +1,22 @@
+digraph G{
+rankdir=LR
+node[shape=circle]
+nodo0 [ label ="S0"];
+nodo1 [ label ="S1"];
+nodo2 [ label ="S2"];
+nodo3 [ label ="S3"];
+nodo4 [ label ="S4"];
+nodo5 [ label ="S5"];
+nodo6 [ label ="S6"];
+nodo7 [ label ="S7"];
+nodo8 [ label ="S8"];
+nodo0->nodo1 [label = "posibles"]
+nodo1->nodo2 [label = "-"]
+nodo1->nodo3 [label = "digito"]
+nodo2->nodo3 [label = "digito"]
+nodo3->nodo4 [label = "digito"]
+nodo4->nodo5 [label = "digito"]
+nodo5->nodo6 [label = "letra"]
+nodo6->nodo7 [label = "letra"]
+nodo7->nodo8 [label = "letra"]
+}

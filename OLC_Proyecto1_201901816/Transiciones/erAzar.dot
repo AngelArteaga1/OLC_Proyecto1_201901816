@@ -8,13 +8,11 @@ label=<
 <TD border="3"  bgcolor="/rdylgn11/2:/rdylgn11/3">simbols</TD>
 <TD border="3"  bgcolor="/rdylgn11/2:/rdylgn11/3">minus</TD>
 <TD border="3"  bgcolor="/rdylgn11/2:/rdylgn11/3">mayus</TD>
-<TD border="3"  bgcolor="/rdylgn11/2:/rdylgn11/3">#</TD>
 </TR>
 <TR>
 <TD border="3" bgcolor="/rdylgn11/4:/rdylgn11/5" gradientangle="270">S0</TD>
 <TD border="3" bgcolor="/rdylgn11/3:/rdylgn11/9" gradientangle="270">[1]</TD>
 <TD border="3"  bgcolor="/rdylgn11/1:/rdylgn11/8">S1</TD>
-<TD border="3"  bgcolor="/rdylgn11/1:/rdylgn11/8">---</TD>
 <TD border="3"  bgcolor="/rdylgn11/1:/rdylgn11/8">---</TD>
 <TD border="3"  bgcolor="/rdylgn11/1:/rdylgn11/8">---</TD>
 </TR>
@@ -24,7 +22,6 @@ label=<
 <TD border="3"  bgcolor="/rdylgn11/1:/rdylgn11/8">S1</TD>
 <TD border="3"  bgcolor="/rdylgn11/1:/rdylgn11/8">S2</TD>
 <TD border="3"  bgcolor="/rdylgn11/1:/rdylgn11/8">S2</TD>
-<TD border="3"  bgcolor="/rdylgn11/1:/rdylgn11/8">---</TD>
 </TR>
 <TR>
 <TD border="3" bgcolor="/rdylgn11/4:/rdylgn11/5" gradientangle="270">S2</TD>
@@ -32,15 +29,6 @@ label=<
 <TD border="3"  bgcolor="/rdylgn11/1:/rdylgn11/8">---</TD>
 <TD border="3"  bgcolor="/rdylgn11/1:/rdylgn11/8">S2</TD>
 <TD border="3"  bgcolor="/rdylgn11/1:/rdylgn11/8">S2</TD>
-<TD border="3"  bgcolor="/rdylgn11/1:/rdylgn11/8">S3</TD>
-</TR>
-<TR>
-<TD border="3" bgcolor="/rdylgn11/4:/rdylgn11/5" gradientangle="270">S3</TD>
-<TD border="3" bgcolor="/rdylgn11/3:/rdylgn11/9" gradientangle="270">[]</TD>
-<TD border="3"  bgcolor="/rdylgn11/1:/rdylgn11/8">---</TD>
-<TD border="3"  bgcolor="/rdylgn11/1:/rdylgn11/8">---</TD>
-<TD border="3"  bgcolor="/rdylgn11/1:/rdylgn11/8">---</TD>
-<TD border="3"  bgcolor="/rdylgn11/1:/rdylgn11/8">---</TD>
 </TR>
 </TABLE>
 >];

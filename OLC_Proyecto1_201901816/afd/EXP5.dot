@@ -1,0 +1,20 @@
+digraph G{
+rankdir=LR
+node[shape=circle]
+nodo0 [ label ="S0"];
+nodo1 [ label ="S1"];
+nodo2 [ label ="S2"];
+nodo3 [ label ="S3"];
+nodo0->nodo1 [label = "\'"]
+nodo1->nodo2 [label = "\n"]
+nodo1->nodo2 [label = "minus"]
+nodo1->nodo2 [label = "mayus"]
+nodo1->nodo2 [label = "digito"]
+nodo1->nodo2 [label = " "]
+nodo2->nodo3 [label = "\'"]
+nodo2->nodo2 [label = "\n"]
+nodo2->nodo2 [label = "minus"]
+nodo2->nodo2 [label = "mayus"]
+nodo2->nodo2 [label = "digito"]
+nodo2->nodo2 [label = " "]
+}

@@ -250,6 +250,74 @@ public class parser extends java_cup.runtime.lr_parser {
     public static int[][] Transiciones;
     public static List<String> conjuntos;
 
+    public static void graficarAFD(String nombre){
+
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        try {
+            fichero = new FileWriter("afd/" + nombre + ".dot");
+            pw = new PrintWriter(fichero);
+            pw.println("digraph G{");
+
+            pw.println("rankdir=LR");
+
+            pw.println("node[shape=circle]");
+
+            //Generamos los estados 
+            for (int i = 0; i < estados.size() -1; i++){
+                pw.println("nodo" + estados.get(i).S + " [ label =\"S" + estados.get(i).S + "\"];");
+            }
+            //realizamos las transiciones
+            for (int i = 0; i < estados.size() - 1; i++){
+                for (int j = 0; j < conjuntos.size() - 1; j++){
+                    if (Transiciones[i][j] != -1){
+                        String conjunto = conjuntos.get(j);
+                        pw.println("nodo" + i + "->nodo" + Transiciones[i][j] + " [label = \"" + conjunto + "\"]");
+                    }
+
+                }
+            }
+
+            pw.println("}");
+
+        } catch (Exception e) {
+            System.out.println("error, no se realizo el archivo");
+        } finally {
+            try {
+                if (null != fichero) {
+                    fichero.close();
+                }
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+        try {
+            //dirección doonde se ecnuentra el compilador de graphviz
+            String dotPath = "C:\\Program Files\\Graphviz\\bin\\dot.exe";
+            //dirección del archivo dot
+            String fileInputPath = "afd/" + nombre + ".dot";
+            //dirección donde se creara la magen
+            String fileOutputPath = "Graficas/AFD/" + nombre + ".jpg";
+            //tipo de conversón
+            String tParam = "-Tjpg";
+            String tOParam = "-o";
+
+            String[] cmd = new String[5];
+            cmd[0] = dotPath;
+            cmd[1] = tParam;
+            cmd[2] = fileInputPath;
+            cmd[3] = tOParam;
+            cmd[4] = fileOutputPath;
+
+            Runtime rt = Runtime.getRuntime();
+
+            rt.exec(cmd);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public static boolean Equals(List<Integer> lista1, List<Integer> lista2){
         if (lista1.size() != lista2.size()){
             return false;
@@ -403,7 +471,31 @@ public class parser extends java_cup.runtime.lr_parser {
                 e2.printStackTrace();
             }
         }
+        try {
+            //dirección doonde se ecnuentra el compilador de graphviz
+            String dotPath = "C:\\Program Files\\Graphviz\\bin\\dot.exe";
+            //dirección del archivo dot
+            String fileInputPath = "transiciones/" + nombre + ".dot";
+            //dirección donde se creara la magen
+            String fileOutputPath = "Graficas/Transiciones/" + nombre + ".jpg";
+            //tipo de conversón
+            String tParam = "-Tjpg";
+            String tOParam = "-o";
 
+            String[] cmd = new String[5];
+            cmd[0] = dotPath;
+            cmd[1] = tParam;
+            cmd[2] = fileInputPath;
+            cmd[3] = tOParam;
+            cmd[4] = fileOutputPath;
+
+            Runtime rt = Runtime.getRuntime();
+
+            rt.exec(cmd);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
 
 
     }
@@ -466,6 +558,31 @@ public class parser extends java_cup.runtime.lr_parser {
                 e2.printStackTrace();
             }
         }
+        try {
+            //dirección doonde se ecnuentra el compilador de graphviz
+            String dotPath = "C:\\Program Files\\Graphviz\\bin\\dot.exe";
+            //dirección del archivo dot
+            String fileInputPath = "siguientes/" + nombre + ".dot";
+            //dirección donde se creara la magen
+            String fileOutputPath = "Graficas/Siguientes/" + nombre + ".jpg";
+            //tipo de conversón
+            String tParam = "-Tjpg";
+            String tOParam = "-o";
+
+            String[] cmd = new String[5];
+            cmd[0] = dotPath;
+            cmd[1] = tParam;
+            cmd[2] = fileInputPath;
+            cmd[3] = tOParam;
+            cmd[4] = fileOutputPath;
+
+            Runtime rt = Runtime.getRuntime();
+
+            rt.exec(cmd);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     public static void graficarArbol(Nodo act, String nombre){
@@ -487,22 +604,11 @@ public class parser extends java_cup.runtime.lr_parser {
             fichero = new FileWriter("arboles/" + nombre + ".dot");
             pw = new PrintWriter(fichero);
             pw.println("digraph G{");
-            //System.out.println("digraph G{");
-            //data = "digraph G{\n";
             pw.println("rankdir=UD");
-            //System.out.println("rankdir=UD");
-            //data = data + "rankdir=UD\n";
             pw.println("node[shape=record]");
-            //System.out.println("node[shape=record]");
-            //data = data + "node[shape=box]\n";
             pw.println("concentrate=true");
-            //System.out.println("concentrate=true");
-            //data = data + "concentrate=true\n";
             pw.println(act.getCodigoInterno());
-            //System.out.println(act.getCodigoInterno());
-            //data = data + act.getCodigoInterno();
             pw.println("}");
-            //System.out.println("}");
         } catch (Exception e) {
             System.out.println("error, no se realizo el archivo");
         } finally {
@@ -515,13 +621,13 @@ public class parser extends java_cup.runtime.lr_parser {
             }
         }
         //para compilar el archivo dot y obtener la imagen
-        /*try {
+        try {
             //dirección doonde se ecnuentra el compilador de graphviz
             String dotPath = "C:\\Program Files\\Graphviz\\bin\\dot.exe";
             //dirección del archivo dot
             String fileInputPath = "arboles/" + nombre + ".dot";
             //dirección donde se creara la magen
-            String fileOutputPath = "arboles/" + nombre + ".dot";
+            String fileOutputPath = "Graficas/arboles/" + nombre + ".jpg";
             //tipo de conversón
             String tParam = "-Tjpg";
             String tOParam = "-o";
@@ -539,8 +645,7 @@ public class parser extends java_cup.runtime.lr_parser {
 
         } catch (Exception ex) {
             ex.printStackTrace();
-        } finally {
-        }*/
+        }
     }
     //-----------------------------------------para errores sintacticos-------------------------------------------------------------------------------------------
     public void syntax_error(Symbol s)
@@ -1038,6 +1143,7 @@ class CUP$parser$actions {
                 graficarArbol(raiz, nombre);
                 graficarSiguientes(nombre);
                 graficarTransiciones(raiz.primeros, nombre);
+                graficarAFD(nombre);
                 parser.num = 1;
                 parser.ListaSiguientes.clear();
 
@@ -1133,6 +1239,7 @@ class CUP$parser$actions {
                 graficarArbol(raiz, nombre);
                 graficarSiguientes(nombre);
                 graficarTransiciones(raiz.primeros, nombre);
+                graficarAFD(nombre);
                 parser.num = 1;
                 parser.ListaSiguientes.clear();
             

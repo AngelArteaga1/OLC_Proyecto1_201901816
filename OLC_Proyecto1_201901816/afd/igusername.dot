@@ -1,0 +1,14 @@
+digraph G{
+rankdir=LR
+node[shape=circle]
+nodo0 [ label ="S0"];
+nodo1 [ label ="S1"];
+nodo2 [ label ="S2"];
+nodo0->nodo1 [label = "@"]
+nodo1->nodo2 [label = "minus"]
+nodo1->nodo2 [label = "mayus"]
+nodo2->nodo2 [label = "minus"]
+nodo2->nodo2 [label = "mayus"]
+nodo2->nodo2 [label = "num"]
+nodo2->nodo2 [label = "_"]
+}

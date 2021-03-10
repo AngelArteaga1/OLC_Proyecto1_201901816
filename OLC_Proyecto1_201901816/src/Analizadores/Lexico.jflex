@@ -22,7 +22,7 @@ entero = [0-9]
 identificador = [A-Za-z]([A-Za-z]|[0-9]+|"_")*
 commen = ("//".*\n)|("//".*\r)
 commenM = ("<""!"[^\!]*"!"">")
-cadena = ("\""[^\"]*"\"")
+cadena = ("\""([^\"]*)"\"")
 caracterespecial = ("\\""n"|"\\""\'"|"\\""\"")
 
 %{

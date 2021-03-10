@@ -277,6 +277,9 @@ public class parser extends java_cup.runtime.lr_parser {
                 for (int j = 0; j < conjuntos.size() - 1; j++){
                     if (Transiciones[i][j] != -1){
                         String conjunto = conjuntos.get(j);
+                        if (conjunto.equals("\\n") || conjunto.equals("\\'")||conjunto.equals("\\\"")){
+                            conjunto = conjunto.replace("\\", "\\\\");
+                        }
                         pw.println("nodo" + i + "->nodo" + Transiciones[i][j] + " [label = \"" + conjunto + "\"]");
                     }
 

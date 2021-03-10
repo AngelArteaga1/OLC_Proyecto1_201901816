@@ -2,24 +2,24 @@ digraph G{
 rankdir=UD
 node[shape=record]
 concentrate=true
-nodo10 [ label =" { N |{1|.|5}| id: 0} "];
-nodo8 [ label =" { N |{1|.|1,2,3,4}| id: 0} "];
-nodo1 [ label =" { N |{1|{letra}|1}| id: 1} "];
-nodo8->nodo1
-nodo7 [ label =" { A |{2,3,4|*|2,3,4}| id: 0} "];
-nodo6 [ label =" { N |{2,3,4|\||2,3,4}| id: 0} "];
-nodo2 [ label =" { N |{2|_|2}| id: 2} "];
-nodo6->nodo2
-nodo5 [ label =" { N |{3,4|\||3,4}| id: 0} "];
-nodo3 [ label =" { N |{3|{letra}|3}| id: 3} "];
-nodo5->nodo3
-nodo4 [ label =" { N |{4|{digito}|4}| id: 4} "];
-nodo5->nodo4
-nodo6->nodo5
-nodo7->nodo6
-nodo8->nodo7
-nodo10->nodo8
-nodo9 [ label =" { N |{5|#|5}| id: 5} "];
-nodo10->nodo9
+nodo42 [ label =" { N |{1|.|5}| id: 0} "];
+nodo40 [ label =" { N |{1|.|1,2,3,4}| id: 0} "];
+nodo33 [ label =" { N |{1|{letra}|1}| id: 1} "];
+nodo40->nodo33
+nodo39 [ label =" { A |{2,3,4|*|2,3,4}| id: 0} "];
+nodo38 [ label =" { N |{2,3,4|\||2,3,4}| id: 0} "];
+nodo34 [ label =" { N |{2|_|2}| id: 2} "];
+nodo38->nodo34
+nodo37 [ label =" { N |{3,4|\||3,4}| id: 0} "];
+nodo35 [ label =" { N |{3|{letra}|3}| id: 3} "];
+nodo37->nodo35
+nodo36 [ label =" { N |{4|{digito}|4}| id: 4} "];
+nodo37->nodo36
+nodo38->nodo37
+nodo39->nodo38
+nodo40->nodo39
+nodo42->nodo40
+nodo41 [ label =" { N |{5|#|5}| id: 5} "];
+nodo42->nodo41
 
 }

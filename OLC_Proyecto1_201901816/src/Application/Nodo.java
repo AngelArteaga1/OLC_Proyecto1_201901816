@@ -73,6 +73,12 @@ public class Nodo {
     
     public String getCodigoInterno() {
         String etiqueta;
+        String value;
+        if (valor.equals("\\n") || valor.equals("\\'") || valor.equals("\\\"")){
+            value = valor.replace("\\", "\\\\");
+        } else {
+            value = valor;
+        }
         if (hizq == null && hder == null) {
             //PARA OBTENER ARREGLO EN STRING
             String CadenaPrimero = "";
@@ -92,7 +98,7 @@ public class Nodo {
                     CadenaUltimo = CadenaUltimo + ultimos[i] + ",";
                 }
             }
-            etiqueta = "nodo" + id + " [ label =\" { " + anulable + " |{" + CadenaPrimero + "|" + valor + "|" + CadenaUltimo + "}| id: " + num + "} \"];\n";
+            etiqueta = "nodo" + id + " [ label =\" { " + anulable + " |{" + CadenaPrimero + "|" + value + "|" + CadenaUltimo + "}| id: " + num + "} \"];\n";
         } else {
             //PARA OBTENER ARREGLO EN STRING
             String CadenaPrimero = "";
@@ -112,7 +118,7 @@ public class Nodo {
                     CadenaUltimo = CadenaUltimo + ultimos[i] + ",";
                 }
             }
-            etiqueta = "nodo" + id + " [ label =\" { " + anulable + " |{" + CadenaPrimero + "|" + valor + "|" + CadenaUltimo + "}| id: " + num + "} \"];\n";
+            etiqueta = "nodo" + id + " [ label =\" { " + anulable + " |{" + CadenaPrimero + "|" + value + "|" + CadenaUltimo + "}| id: " + num + "} \"];\n";
         }
         if (hizq != null) {
             etiqueta = etiqueta + hizq.getCodigoInterno()

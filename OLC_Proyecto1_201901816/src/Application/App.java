@@ -10,13 +10,20 @@ import java.awt.Image;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 
 /**
  *
@@ -38,16 +45,20 @@ public class App extends javax.swing.JFrame {
      */
     public App() {
         initComponents();
-        //SOLO AJUSTAMOS LA IMAGEN
-        ImageIcon imgIcon = new ImageIcon(getClass().getResource("/img/maxresdefault.jpg"));
+        //SOLO AJUSTAMOS LA IMAGENF
+        ImageIcon imgIcon = new ImageIcon(getClass().getResource("/img/icon.jpg"));
         Image imgEscalada = imgIcon.getImage().getScaledInstance(Imagen.getWidth(),
-                Imagen.getHeight(), Image.SCALE_SMOOTH);
+                Imagen.getHeight(), Image.SCALE_DEFAULT);
         Icon iconoEscalado = new ImageIcon(imgEscalada);
         Imagen.setIcon(iconoEscalado);
         ListaTransiciones = new ArrayList<Transiciones>();
         ListaConjuntos = new ArrayList<Conjunto>();
         ListaCadenas = new ArrayList<Cadena>();
-        
+        try {
+            scanner();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     public String Abrir(File archivo){
@@ -80,6 +91,81 @@ public class App extends javax.swing.JFrame {
         return message;
     }
 
+    public void scanner() throws InterruptedException {
+        // creates a file with the location filename
+        String location = "Graficas";
+        File currentDir = new File(location);
+
+        // result is the variable name for jtree
+        DefaultTreeModel model = (DefaultTreeModel) jTree1.getModel();
+        // gets the root of the current model used only once at the starting
+        DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
+        // function called
+        displayDirectoryContents(currentDir, root);
+    }
+    
+    public void displayDirectoryContents(File dir, DefaultMutableTreeNode root2)
+            throws InterruptedException {
+
+        DefaultMutableTreeNode newdir = new DefaultMutableTreeNode();
+
+        // creates array of file type for all the files found
+        File[] files = dir.listFiles();
+
+        for (File file : files) {
+            if (file == null) {
+                System.out.println("NUll directory found ");
+                continue;
+            }
+            if (file.isDirectory()) {
+                // file is a directory that is a folder has been dound
+
+                if (file.listFiles() == null) {
+                    // skips null files
+                    continue;
+                }
+
+                // gets the current model of the jtree
+                DefaultTreeModel model = (DefaultTreeModel) jTree1.getModel();
+
+                // gets the root
+                DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
+
+                // generates a node newdir using filename
+                newdir = new DefaultMutableTreeNode(file.getName());
+
+                // adds a node to the root of the jtree
+                root2.add(newdir);
+
+                // refresh the model to show the changes
+                model.reload();
+
+                // recursively calls the function again to explore the contents
+                // folder
+                displayDirectoryContents(file, newdir);
+            } else {
+                // Else part File is not a directory
+
+                // gets the current model of the tree
+                DefaultTreeModel model = (DefaultTreeModel) jTree1.getModel();
+
+                // selected node is the position where the new node will be
+                // inserted
+                DefaultMutableTreeNode selectednode = root2;
+
+                DefaultMutableTreeNode newfile = new DefaultMutableTreeNode(file.getName());
+
+                // inserts a node newfile under selected node which is the root
+                model.insertNodeInto(newfile, selectednode, selectednode.getChildCount());
+
+                // refresh the model to show the changes
+                model.reload();
+
+            }
+
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -99,6 +185,7 @@ public class App extends javax.swing.JFrame {
         TxtSalida = new javax.swing.JTextArea();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTree1 = new javax.swing.JTree();
+        jScrollPane4 = new javax.swing.JScrollPane();
         Imagen = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
@@ -115,7 +202,7 @@ public class App extends javax.swing.JFrame {
         jScrollPane1.setViewportView(TxtEntrada);
 
         jLabel1.setFont(new java.awt.Font("Bookman Old Style", 0, 14)); // NOI18N
-        jLabel1.setText("Archivo de Entrada");
+        jLabel1.setText("Entrada");
 
         jLabel2.setFont(new java.awt.Font("Bookman Old Style", 0, 14)); // NOI18N
         jLabel2.setText("Salida");
@@ -142,9 +229,23 @@ public class App extends javax.swing.JFrame {
         TxtSalida.setRows(5);
         jScrollPane2.setViewportView(TxtSalida);
 
+        //jTree1.setModel(new FileSystemModel(new File("C:\\Users\\Angel Arteaga\\Downloads\\Filmora X Suscribete a JEYLINI")));
+        javax.swing.tree.DefaultMutableTreeNode treeNode1 = new javax.swing.tree.DefaultMutableTreeNode("Graficas");
+        jTree1.setModel(new javax.swing.tree.DefaultTreeModel(treeNode1));
+        jTree1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTree1MouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(jTree1);
 
-        Imagen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/maxresdefault.jpg"))); // NOI18N
+        jScrollPane4.setBackground(new java.awt.Color(255, 255, 255));
+        jScrollPane4.setForeground(new java.awt.Color(255, 255, 255));
+
+        Imagen.setBackground(new java.awt.Color(255, 255, 255));
+        Imagen.setForeground(new java.awt.Color(255, 255, 255));
+        Imagen.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icon.jpg"))); // NOI18N
+        jScrollPane4.setViewportView(Imagen);
 
         jMenu1.setText("Archivo");
         jMenu1.setFont(new java.awt.Font("Bookman Old Style", 0, 14)); // NOI18N
@@ -208,24 +309,27 @@ public class App extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane2)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
                                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 197, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 427, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane1))
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(Imagen, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 1042, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING))
+                        .addGap(0, 0, Short.MAX_VALUE)))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 720, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -233,21 +337,22 @@ public class App extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 423, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jButton1)
-                                .addComponent(jButton2)))
-                        .addComponent(jScrollPane3))
-                    .addComponent(Imagen, javax.swing.GroupLayout.PREFERRED_SIZE, 323, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(16, 16, 16)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 423, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jButton1)
+                                    .addComponent(jButton2)))
+                            .addComponent(jScrollPane3))
+                        .addGap(16, 16, 16)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane4))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -354,6 +459,17 @@ public class App extends javax.swing.JFrame {
             sintactico.parse();
         } catch (Exception e) {
         }
+        //ELIMINAMOS LOS HIJOS DEL BICHO
+        DefaultTreeModel modelo = (DefaultTreeModel)jTree1.getModel();
+        DefaultMutableTreeNode root = (DefaultMutableTreeNode) modelo.getRoot();
+        root.removeAllChildren();
+        modelo.reload();
+        try {
+            TimeUnit.SECONDS.sleep(1);
+            scanner();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -386,93 +502,141 @@ public class App extends javax.swing.JFrame {
             System.out.println("");
             System.out.println("Conjuntos en orden: " + ListaTransiciones.get(i).conjuntos);
         }*/
-
-        //EMPEXAMOS A LEER LOS LEXEMAS:
-        for (int i = 0; i < ListaCadenas.size(); i++) {
-            int S = 0;
-            String cadena = ListaCadenas.get(i).Lexema;
-            cadena = cadena.replace("\"", "");
-            String nombre = ListaCadenas.get(i).nombre;
-            int[][] trans = null;
-            int EstadoFinal = -10;
-            List<String> conjuntos = null;
-            Conjunto ConjuntoReal = null;
-            boolean correcto = true;
-            //System.out.println("LEXEMA ACTUAL: " + cadena);
-            //System.out.println("ID: " + nombre);
-            //System.out.println("AHORA COMPARAMOS: ");
-            //OBTENEMOS LA MATRIZ INDICE
-            for (int j = 0; j < ListaTransiciones.size(); j++) {
-                String nombre2 = ListaTransiciones.get(j).nombre;
-                //System.out.println(nombre2 + "<->" + nombre);
-                if (nombre.equals(nombre2)) {
-                    //System.out.println("ENCONTRADO!");
-                    trans = ListaTransiciones.get(j).transiciones;
-                    EstadoFinal = ListaTransiciones.get(j).EstadoFinal;
-                    conjuntos = ListaTransiciones.get(j).conjuntos;
-                    break;
-                }
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        try {
+            if (archivo != null){
+                String name = archivo.getName();
+                name = name.replaceFirst("[.][^.]+$", "");
+                fichero = new FileWriter("Graficas/Salidas/" + name + ".json");
+                pw = new PrintWriter(fichero);
+            } else {
+                fichero = new FileWriter("Graficas/Salidas/Lexemas.json");
+                pw = new PrintWriter(fichero);
             }
-            //System.out.println("ESTADO FINAL: " + EstadoFinal);
-            //System.out.println("CONJUNTOS: " + conjuntos);
-            //System.out.println("TRANSICIONES: ");
-            for (int x = 0; x < trans.length; x++) {
-                for (int y = 0; y < trans[x].length; y++) {
-                    //System.out.print(trans[x][y] + ", ");
+            pw.println("[");
+            //EMPEXAMOS A LEER LOS LEXEMAS:
+            for (int i = 0; i < ListaCadenas.size(); i++) {
+                int S = 0;
+                String cadena = ListaCadenas.get(i).Lexema;
+                cadena = cadena.replace("\"", "");
+                String nombre = ListaCadenas.get(i).nombre;
+                int[][] trans = null;
+                int EstadoFinal = -10;
+                List<String> conjuntos = null;
+                Conjunto ConjuntoReal = null;
+                boolean correcto = true;
+                //System.out.println("LEXEMA ACTUAL: " + cadena);
+                //System.out.println("ID: " + nombre);
+                //System.out.println("AHORA COMPARAMOS: ");
+                //OBTENEMOS LA MATRIZ INDICE
+                for (int j = 0; j < ListaTransiciones.size(); j++) {
+                    String nombre2 = ListaTransiciones.get(j).nombre;
+                    //System.out.println(nombre2 + "<->" + nombre);
+                    if (nombre.equals(nombre2)) {
+                        //System.out.println("ENCONTRADO!");
+                        trans = ListaTransiciones.get(j).transiciones;
+                        EstadoFinal = ListaTransiciones.get(j).EstadoFinal;
+                        conjuntos = ListaTransiciones.get(j).conjuntos;
+                        break;
+                    }
                 }
-                //System.out.println("");
-            }
-            //RECORREMOS LA CADENA ACTUAL
-            //System.out.println("AHORA RECORREMOS LA CADENA:");
-            for (int j = 0; j < cadena.length(); j++) {
-                String caracter = String.valueOf(cadena.charAt(j));
-                //System.out.println("CARACTER: " + caracter);
-                if (correcto == true) {
-                    //RECORREMOS LA FILA DEL ESTADO ACTUAL
-                    //System.out.println("RECORREMOS LA FILA DEL ESTADO:" + S);
-                    for (int x = 0; x < trans[S].length - 1; x++) {
-                        //System.out.println("POSICION: " + S + ", " + x + " INDICE: " + trans[S][x]);
-                        boolean encontrado = false;
-                        if (trans[S][x] != -1) {
-                            //ENCONTRAMOS UNA POSIBLE TRANSICION
-                            //OBTENEMOS EL NOMBRE DE LOS CONJUNTO DE ESA POSICION
-                            String conjuntoActual = conjuntos.get(x);
-                            if (conjuntoActual.equals("\\n") || conjuntoActual.equals("\\'")|| conjuntoActual.equals("\\\"")){
-                                if (caracter.equals("\\")){
+                //System.out.println("ESTADO FINAL: " + EstadoFinal);
+                //System.out.println("CONJUNTOS: " + conjuntos);
+                //System.out.println("TRANSICIONES: ");
+                for (int x = 0; x < trans.length; x++) {
+                    for (int y = 0; y < trans[x].length; y++) {
+                        //System.out.print(trans[x][y] + ", ");
+                    }
+                    //System.out.println("");
+                }
+                //RECORREMOS LA CADENA ACTUAL
+                //System.out.println("AHORA RECORREMOS LA CADENA:");
+                for (int j = 0; j < cadena.length(); j++) {
+                    String caracter = String.valueOf(cadena.charAt(j));
+                    //System.out.println("CARACTER: " + caracter);
+                    if (correcto == true) {
+                        //RECORREMOS LA FILA DEL ESTADO ACTUAL
+                        //System.out.println("RECORREMOS LA FILA DEL ESTADO:" + S);
+                        for (int x = 0; x < trans[S].length - 1; x++) {
+                            //System.out.println("POSICION: " + S + ", " + x + " INDICE: " + trans[S][x]);
+                            boolean encontrado = false;
+                            if (trans[S][x] != -1) {
+                                //ENCONTRAMOS UNA POSIBLE TRANSICION
+                                //OBTENEMOS EL NOMBRE DE LOS CONJUNTO DE ESA POSICION
+                                String conjuntoActual = conjuntos.get(x);
+                                if (conjuntoActual.equals("\\n") || conjuntoActual.equals("\\'") || conjuntoActual.equals("\\\"")) {
+                                    if (caracter.equals("\\")) {
+                                        break;
+                                    }
+                                }
+                                //OBTENEMOS LA LISTA DE CARACTERES
+                                for (int z = 0; z < ListaConjuntos.size(); z++) {
+                                    if (ListaConjuntos.get(z).nombre.equals(conjuntoActual)) {
+                                        ConjuntoReal = ListaConjuntos.get(z);
+                                    }
+                                }
+                                //VERIFICAMOS SI EL CARACTER ESTA EN ESE CONJUNTO
+                                if (ConjuntoReal.Caracteres.contains(caracter)) {
+                                    //EL NUEVO ESTADO ES:
+                                    S = trans[S][x];
+                                    encontrado = true;
                                     break;
                                 }
                             }
-                            //OBTENEMOS LA LISTA DE CARACTERES
-                            for (int z = 0; z < ListaConjuntos.size(); z++) {
-                                if (ListaConjuntos.get(z).nombre.equals(conjuntoActual)) {
-                                    ConjuntoReal = ListaConjuntos.get(z);
-                                }
+                            if (x == trans[S].length - 2 && encontrado == false) {
+                                correcto = false;
                             }
-                            //VERIFICAMOS SI EL CARACTER ESTA EN ESE CONJUNTO
-                            if (ConjuntoReal.Caracteres.contains(caracter)) {
-                                //EL NUEVO ESTADO ES:
-                                S = trans[S][x];
-                                encontrado = true;
-                                break;
-                            }
-                        }
-                        if (x == trans[S].length - 2 && encontrado == false) {
-                            correcto = false;
                         }
                     }
                 }
+                //IMPRIMIMOS SI ES CORRECTO O INCORRECTO Y SEGUIMOS EL JSON
+                //System.out.println("EL LEXEMA FINALIZO EN EL ESTADO: " + S);
+                if (EstadoFinal == S && correcto == true) {
+                    System.out.println("EL LEXEMA: " + ListaCadenas.get(i).Lexema + " ES CORRECTO");
+                    pw.println("{");
+                    pw.println("\"valor\": " + ListaCadenas.get(i).Lexema + ",");
+                    pw.println("\"ExpresionRegular\": \"" + ListaCadenas.get(i).nombre + "\",");
+                    pw.println("\"Resultado\":" + "\"Cadena Válida\"");
+                    pw.println("},");
+                } else {
+                    System.out.println("EL LEXEMA: " + ListaCadenas.get(i).Lexema + " ES INCORRECTO");
+                    pw.println("{");
+                    pw.println("\"valor\": " + ListaCadenas.get(i).Lexema + ",");
+                    pw.println("\"ExpresionRegular\": \"" + ListaCadenas.get(i).nombre + "\",");
+                    pw.println("\"Resultado\":" + "\"Cadena Inválida\"");
+                    pw.println("},");
+                }
             }
-            //IMPRIMIMOS SI ES CORRECTO O INCORRECTO
-            //System.out.println("EL LEXEMA FINALIZO EN EL ESTADO: " + S);
-            if (EstadoFinal == S && correcto == true) {
-                System.out.println("EL LEXEMA: " + ListaCadenas.get(i).Lexema + " ES CORRECTO");
-            } else {
-                System.out.println("EL LEXEMA: " + ListaCadenas.get(i).Lexema + " ES INCORRECTO");
+            pw.println("]");
+        } catch (Exception e) {
+            System.out.println("error, no se realizo el archivo");
+        } finally {
+            try {
+                if (null != fichero) {
+                    fichero.close();
+                }
+            } catch (Exception e2) {
+                e2.printStackTrace();
             }
         }
-        
-        
+
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jTree1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTree1MouseClicked
+        // TODO add your handling code here:
+        if (evt.getClickCount() == 2 && !evt.isConsumed()) {
+            evt.consume();
+            String nombre = jTree1.getSelectionPath().toString().replaceAll("[\\[\\]]", "").replace(", ", "/");
+            try {
+                Image image = new ImageIcon(nombre).getImage();
+                Icon iconoEscalado = new ImageIcon(image);
+                Imagen.setIcon(iconoEscalado);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+    }//GEN-LAST:event_jTree1MouseClicked
 
     /**
      * @param args the command line arguments
@@ -526,6 +690,7 @@ public class App extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTree jTree1;
     // End of variables declaration//GEN-END:variables
 }

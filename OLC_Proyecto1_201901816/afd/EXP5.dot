@@ -4,7 +4,7 @@ node[shape=circle]
 nodo0 [ label ="S0"];
 nodo1 [ label ="S1"];
 nodo2 [ label ="S2"];
-nodo3 [ label ="S3"];
+nodo3 [ label ="S3", shape=doublecircle ];
 nodo0->nodo1 [label = "\'"]
 nodo1->nodo2 [label = "\n"]
 nodo1->nodo2 [label = "minus"]

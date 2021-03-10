@@ -10,9 +10,9 @@ import java.awt.Image;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.PrintWriter;
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -29,7 +29,9 @@ public class App extends javax.swing.JFrame {
     File archivo;
     FileInputStream entrada;
     FileOutputStream salida;
-    
+    public static List<Transiciones> ListaTransiciones;
+    public static List<Conjunto> ListaConjuntos;
+    public static List<Cadena> ListaCadenas;
     
     /**
      * Creates new form App
@@ -42,26 +44,10 @@ public class App extends javax.swing.JFrame {
                 Imagen.getHeight(), Image.SCALE_SMOOTH);
         Icon iconoEscalado = new ImageIcon(imgEscalada);
         Imagen.setIcon(iconoEscalado);
-        String hola = "hola\" bebe";
-        hola = hola.replace("\"", "\\\"");
-        FileWriter fichero = null;
-        PrintWriter pw = null;
-        try{
-            fichero = new FileWriter("arboles/hola.dot");
-            pw = new PrintWriter(fichero);
-            pw.println(hola);
-        } catch (Exception e) {
-            System.out.println("error, no se realizo el archivo");
-        } finally {
-            try {
-                if (null != fichero) {
-                    fichero.close();
-                }
-            } catch (Exception e2) {
-                e2.printStackTrace();
-            }
-        }
-        System.out.println(hola);
+        ListaTransiciones = new ArrayList<Transiciones>();
+        ListaConjuntos = new ArrayList<Conjunto>();
+        ListaCadenas = new ArrayList<Cadena>();
+        
     }
     
     public String Abrir(File archivo){
@@ -354,6 +340,12 @@ public class App extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        //REINICIAMOS LAS LISTAS
+        ListaTransiciones.clear();
+        ListaConjuntos.clear();
+        ListaCadenas.clear();
+        //INTENTAR INICIALIZAR ALGO
+        parser.Caracteres = new ArrayList<String>();
         TxtSalida.setText("");
         try {
             String path = TxtEntrada.getText();
@@ -366,6 +358,120 @@ public class App extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
+        System.out.println("");
+        System.out.println("***************** SE VINO LO CHIDO *****************");
+        /*
+        System.out.println("");
+        System.out.println("***************************************************************************************");
+        System.out.println("ESTA ES LA LISTA DE LEXEMAS:");
+        for (int i  = 0; i < ListaCadenas.size(); i++){
+            System.out.println("Lexema: " + ListaCadenas.get(i).Lexema + " nombre: " + ListaCadenas.get(i).nombre);
+        }
+        System.out.println("ESTA ES LA LISTA DE CONJUNTOS:");
+        for (int i  = 0; i < ListaConjuntos.size(); i++){
+            System.out.println("************************");
+            System.out.println("Conjunto: " + ListaConjuntos.get(i).nombre);
+            System.out.println(ListaConjuntos.get(i).Caracteres);
+        }
+        System.out.println("TABLA DE TRANSICIONES:");
+        for (int i = 0; i < ListaTransiciones.size(); i++){
+            System.out.println("**********************************************");
+            System.out.println("Transicion: " + ListaTransiciones.get(i).nombre);
+            for (int x = 0; x < ListaTransiciones.get(i).transiciones.length; x++){
+                for (int y = 0; y < ListaTransiciones.get(i).transiciones[x].length; y++){
+                    System.out.print(ListaTransiciones.get(i).transiciones[x][y] + ", ");
+                }
+                System.out.println("");
+            }
+            System.out.println("");
+            System.out.println("Conjuntos en orden: " + ListaTransiciones.get(i).conjuntos);
+        }*/
+
+        //EMPEXAMOS A LEER LOS LEXEMAS:
+        for (int i = 0; i < ListaCadenas.size(); i++) {
+            int S = 0;
+            String cadena = ListaCadenas.get(i).Lexema;
+            cadena = cadena.replace("\"", "");
+            String nombre = ListaCadenas.get(i).nombre;
+            int[][] trans = null;
+            int EstadoFinal = -10;
+            List<String> conjuntos = null;
+            Conjunto ConjuntoReal = null;
+            boolean correcto = true;
+            //System.out.println("LEXEMA ACTUAL: " + cadena);
+            //System.out.println("ID: " + nombre);
+            //System.out.println("AHORA COMPARAMOS: ");
+            //OBTENEMOS LA MATRIZ INDICE
+            for (int j = 0; j < ListaTransiciones.size(); j++) {
+                String nombre2 = ListaTransiciones.get(j).nombre;
+                //System.out.println(nombre2 + "<->" + nombre);
+                if (nombre.equals(nombre2)) {
+                    //System.out.println("ENCONTRADO!");
+                    trans = ListaTransiciones.get(j).transiciones;
+                    EstadoFinal = ListaTransiciones.get(j).EstadoFinal;
+                    conjuntos = ListaTransiciones.get(j).conjuntos;
+                    break;
+                }
+            }
+            //System.out.println("ESTADO FINAL: " + EstadoFinal);
+            //System.out.println("CONJUNTOS: " + conjuntos);
+            //System.out.println("TRANSICIONES: ");
+            for (int x = 0; x < trans.length; x++) {
+                for (int y = 0; y < trans[x].length; y++) {
+                    //System.out.print(trans[x][y] + ", ");
+                }
+                //System.out.println("");
+            }
+            //RECORREMOS LA CADENA ACTUAL
+            //System.out.println("AHORA RECORREMOS LA CADENA:");
+            for (int j = 0; j < cadena.length(); j++) {
+                String caracter = String.valueOf(cadena.charAt(j));
+                //System.out.println("CARACTER: " + caracter);
+                if (correcto == true) {
+                    //RECORREMOS LA FILA DEL ESTADO ACTUAL
+                    //System.out.println("RECORREMOS LA FILA DEL ESTADO:" + S);
+                    for (int x = 0; x < trans[S].length - 1; x++) {
+                        //System.out.println("POSICION: " + S + ", " + x + " INDICE: " + trans[S][x]);
+                        boolean encontrado = false;
+                        if (trans[S][x] != -1) {
+                            //ENCONTRAMOS UNA POSIBLE TRANSICION
+                            //OBTENEMOS EL NOMBRE DE LOS CONJUNTO DE ESA POSICION
+                            String conjuntoActual = conjuntos.get(x);
+                            if (conjuntoActual.equals("\\n") || conjuntoActual.equals("\\'")|| conjuntoActual.equals("\\\"")){
+                                if (caracter.equals("\\")){
+                                    break;
+                                }
+                            }
+                            //OBTENEMOS LA LISTA DE CARACTERES
+                            for (int z = 0; z < ListaConjuntos.size(); z++) {
+                                if (ListaConjuntos.get(z).nombre.equals(conjuntoActual)) {
+                                    ConjuntoReal = ListaConjuntos.get(z);
+                                }
+                            }
+                            //VERIFICAMOS SI EL CARACTER ESTA EN ESE CONJUNTO
+                            if (ConjuntoReal.Caracteres.contains(caracter)) {
+                                //EL NUEVO ESTADO ES:
+                                S = trans[S][x];
+                                encontrado = true;
+                                break;
+                            }
+                        }
+                        if (x == trans[S].length - 2 && encontrado == false) {
+                            correcto = false;
+                        }
+                    }
+                }
+            }
+            //IMPRIMIMOS SI ES CORRECTO O INCORRECTO
+            //System.out.println("EL LEXEMA FINALIZO EN EL ESTADO: " + S);
+            if (EstadoFinal == S && correcto == true) {
+                System.out.println("EL LEXEMA: " + ListaCadenas.get(i).Lexema + " ES CORRECTO");
+            } else {
+                System.out.println("EL LEXEMA: " + ListaCadenas.get(i).Lexema + " ES INCORRECTO");
+            }
+        }
+        
+        
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**

@@ -249,6 +249,7 @@ public class parser extends java_cup.runtime.lr_parser {
     public static List<Integer> ListaAuxiliar;
     public static int[][] Transiciones;
     public static List<String> conjuntos;
+    public static List<String> Caracteres = new ArrayList<String>();
 
     public static void graficarAFD(String nombre){
 
@@ -265,7 +266,11 @@ public class parser extends java_cup.runtime.lr_parser {
 
             //Generamos los estados 
             for (int i = 0; i < estados.size() -1; i++){
-                pw.println("nodo" + estados.get(i).S + " [ label =\"S" + estados.get(i).S + "\"];");
+                if (estados.get(i).combinacion.contains(ListaSiguientes.size())){
+                    pw.println("nodo" + estados.get(i).S + " [ label =\"S" + estados.get(i).S + "\", shape=doublecircle ];");
+                } else {
+                    pw.println("nodo" + estados.get(i).S + " [ label =\"S" + estados.get(i).S + "\"];");
+                } 
             }
             //realizamos las transiciones
             for (int i = 0; i < estados.size() - 1; i++){
@@ -391,21 +396,16 @@ public class parser extends java_cup.runtime.lr_parser {
         try{
             //recorremos la lista de estados encontrados
             for (int i = 0; i < estados.size(); i++){
-                System.out.println("***********************************************");
-                System.out.println("EMPIEZO A RECORRER ESTADO: " + estados.get(i).S);
                 //recorremos las combinaciones del estado actual
                 for (int j = 0; j < estados.get(i).combinacion.size(); j++){
-                    System.out.println("EMPIEZO A RECORRER COMBINACION: " + estados.get(i).combinacion.get(j));
                     //obtenemos el indice de esa combinacion
                     int indice = estados.get(i).combinacion.get(j);
                     //obtenemos el string del conjunto de ese indice
                     String conjunto = GetCadenaConjunto(indice);
-                    System.out.println("ESTE ES EL CONJUNTO DE ESTA COMBINACION: " + conjunto);
                     //recorreremos la lista de estados nuevamente
                     for (int k = 0; k < estados.size(); k++){
                         //sera igual al estado que tenga la misma combinacion para obtener el estado
                         if (Equals(estados.get(k).combinacion, ListaSiguientes.get(indice - 1).siguientes)){
-                            System.out.println("LOS SIGUIENTES DE ESE CONJUNTO SON: " + ListaSiguientes.get(indice-1).siguientes);
                             Transiciones[i][GetConjunto(conjunto)] = estados.get(k).S;
                         }
                     }
@@ -719,7 +719,13 @@ class CUP$parser$actions {
 		int conjuntoright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).right;
 		String conjunto = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-4)).value;
 		
-    parser.contCon++;
+    try{
+            Application.App.ListaConjuntos.add(new Conjunto(new ArrayList<>(parser.Caracteres),conjunto));
+            parser.Caracteres.clear();
+            parser.contCon++;
+        }catch(Exception e){
+            System.err.println("Error de Conjuntos: " + e);
+        }
 
               CUP$parser$result = parser.getSymbolFactory().newSymbol("CUERPO",1, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-6)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -733,7 +739,13 @@ class CUP$parser$actions {
 		int conjuntoright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)).right;
 		String conjunto = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-4)).value;
 		
-            parser.contCon++;
+            try{
+                Application.App.ListaConjuntos.add(new Conjunto(new ArrayList<>(parser.Caracteres),conjunto));
+                parser.Caracteres.clear();
+                parser.contCon++;
+            }catch(Exception e){
+                System.err.println("Error de Conjuntos: " + e);
+            }
         
               CUP$parser$result = parser.getSymbolFactory().newSymbol("CUERPO",1, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-7)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
@@ -743,7 +755,43 @@ class CUP$parser$actions {
           case 4: // CONJUNTO ::= ASCII TKColocho ASCII 
             {
               String RESULT =null;
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-2)).value;
+		int bleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int bright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String b = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
+    try{
+        int inicio;
+        int fin;
+        if (a == "\\n"){
+            inicio = 10;
+        } else if (a == "\\'"){
+            inicio = 39;
+        } else if (a == "\\\""){
+            inicio = 34;
+        } else {
+            inicio = (int)a.charAt(0);
+        }
+        if (b == "\\n"){
+            fin = 10;
+        } else if (b == "\\'"){
+            fin = 39;
+        } else if (b == "\\\""){
+            fin = 34;
+        } else {
+            fin = (int)b.charAt(0);
+        }
+        for (int i = inicio; i <= fin; i++){
+            char temp = (char)i;
+            String caracter = String.valueOf(temp);
+            parser.Caracteres.add(caracter);
+        }
+    }catch(Exception e){
+        System.err.println("Equis de: " + e);
+    }
+
               CUP$parser$result = parser.getSymbolFactory().newSymbol("CONJUNTO",2, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -761,7 +809,12 @@ class CUP$parser$actions {
           case 6: // CONJUNTOLARGO ::= CONJUNTOLARGO TKComa ASCII 
             {
               String RESULT =null;
+		int lexemaleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int lexemaright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String lexema = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
+    parser.Caracteres.add(lexema);
+
               CUP$parser$result = parser.getSymbolFactory().newSymbol("CONJUNTOLARGO",6, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -770,7 +823,12 @@ class CUP$parser$actions {
           case 7: // CONJUNTOLARGO ::= ASCII 
             {
               String RESULT =null;
+		int lexemaleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int lexemaright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String lexema = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
 		
+                    parser.Caracteres.add(lexema);
+                
               CUP$parser$result = parser.getSymbolFactory().newSymbol("CONJUNTOLARGO",6, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -779,7 +837,10 @@ class CUP$parser$actions {
           case 8: // ASCII ::= identificador 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -788,7 +849,10 @@ class CUP$parser$actions {
           case 9: // ASCII ::= C33 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -797,7 +861,10 @@ class CUP$parser$actions {
           case 10: // ASCII ::= C35 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -806,7 +873,10 @@ class CUP$parser$actions {
           case 11: // ASCII ::= C36 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -815,7 +885,10 @@ class CUP$parser$actions {
           case 12: // ASCII ::= TKPorcentaje 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -824,7 +897,10 @@ class CUP$parser$actions {
           case 13: // ASCII ::= C38 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -833,7 +909,10 @@ class CUP$parser$actions {
           case 14: // ASCII ::= C40 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -842,7 +921,10 @@ class CUP$parser$actions {
           case 15: // ASCII ::= C41 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -851,7 +933,10 @@ class CUP$parser$actions {
           case 16: // ASCII ::= TKAsterisco 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -860,7 +945,10 @@ class CUP$parser$actions {
           case 17: // ASCII ::= TKMas 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -869,7 +957,10 @@ class CUP$parser$actions {
           case 18: // ASCII ::= TKComa 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -878,7 +969,10 @@ class CUP$parser$actions {
           case 19: // ASCII ::= TKGuion 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -887,7 +981,10 @@ class CUP$parser$actions {
           case 20: // ASCII ::= TKPunto 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -896,7 +993,10 @@ class CUP$parser$actions {
           case 21: // ASCII ::= C47 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -905,7 +1005,10 @@ class CUP$parser$actions {
           case 22: // ASCII ::= entero 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -914,7 +1017,10 @@ class CUP$parser$actions {
           case 23: // ASCII ::= TKDosPuntos 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -923,7 +1029,10 @@ class CUP$parser$actions {
           case 24: // ASCII ::= TKPuntoComa 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -932,7 +1041,10 @@ class CUP$parser$actions {
           case 25: // ASCII ::= C60 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -941,7 +1053,10 @@ class CUP$parser$actions {
           case 26: // ASCII ::= C61 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -950,7 +1065,10 @@ class CUP$parser$actions {
           case 27: // ASCII ::= TKMayor 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -959,7 +1077,10 @@ class CUP$parser$actions {
           case 28: // ASCII ::= TKInterrogacion 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -968,7 +1089,10 @@ class CUP$parser$actions {
           case 29: // ASCII ::= C64 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -977,7 +1101,10 @@ class CUP$parser$actions {
           case 30: // ASCII ::= C91 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -986,7 +1113,10 @@ class CUP$parser$actions {
           case 31: // ASCII ::= C93 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -995,7 +1125,10 @@ class CUP$parser$actions {
           case 32: // ASCII ::= C94 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1004,7 +1137,10 @@ class CUP$parser$actions {
           case 33: // ASCII ::= C95 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1013,7 +1149,10 @@ class CUP$parser$actions {
           case 34: // ASCII ::= C96 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1022,7 +1161,10 @@ class CUP$parser$actions {
           case 35: // ASCII ::= TKParA 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1031,7 +1173,10 @@ class CUP$parser$actions {
           case 36: // ASCII ::= TKBarra 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1040,7 +1185,10 @@ class CUP$parser$actions {
           case 37: // ASCII ::= TKParC 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1049,7 +1197,10 @@ class CUP$parser$actions {
           case 38: // ASCII ::= caracterespecial 
             {
               String RESULT =null;
-
+		int aleft = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).left;
+		int aright = ((java_cup.runtime.Symbol)CUP$parser$stack.peek()).right;
+		String a = (String)((java_cup.runtime.Symbol) CUP$parser$stack.peek()).value;
+		RESULT = a;
               CUP$parser$result = parser.getSymbolFactory().newSymbol("ASCII",5, ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1144,6 +1295,21 @@ class CUP$parser$actions {
                 graficarSiguientes(nombre);
                 graficarTransiciones(raiz.primeros, nombre);
                 graficarAFD(nombre);
+                //ALMACENAMOS LAS TRANSICIONES Y LOS CONJUNTOS
+                
+                try{
+                    int EstadoFinal = -10;
+                    for (int i = 0; i < parser.estados.size(); i++){
+                        if (parser.estados.get(i).combinacion.contains(ListaSiguientes.size())){
+                            EstadoFinal = parser.estados.get(i).S;
+                        }
+                    }
+                Transiciones tempTrans = new Transiciones(parser.Transiciones, nombre, EstadoFinal, new ArrayList<>(parser.conjuntos));
+                Application.App.ListaTransiciones.add(tempTrans);
+                }catch(Exception e){
+                    System.err.println("Error de Transiciones: " + e);
+                }
+
                 parser.num = 1;
                 parser.ListaSiguientes.clear();
 
@@ -1236,10 +1402,26 @@ class CUP$parser$actions {
                         }
                     }
                 }
+
                 graficarArbol(raiz, nombre);
                 graficarSiguientes(nombre);
                 graficarTransiciones(raiz.primeros, nombre);
                 graficarAFD(nombre);
+                //ALMACENAMOS LAS TRANSICIONES Y LOS CONJUNTOS
+                
+                try{
+                    int EstadoFinal = -10;
+                    for (int i = 0; i < parser.estados.size(); i++){
+                        if (parser.estados.get(i).combinacion.contains(ListaSiguientes.size())){
+                            EstadoFinal = parser.estados.get(i).S;
+                        }
+                    }
+                Transiciones tempTrans = new Transiciones(parser.Transiciones, nombre, EstadoFinal, new ArrayList<>(parser.conjuntos));
+                Application.App.ListaTransiciones.add(tempTrans);
+                }catch(Exception e){
+                    System.err.println("Error de Transiciones: " + e);
+                }
+
                 parser.num = 1;
                 parser.ListaSiguientes.clear();
             
@@ -1517,7 +1699,7 @@ class CUP$parser$actions {
             parser.contId++;
             parser.num++;
             RESULT = NuevaHoja;
-        
+
               CUP$parser$result = parser.getSymbolFactory().newSymbol("HOJAS",8, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-2)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1546,6 +1728,11 @@ class CUP$parser$actions {
             } else {
                 parser.ListaSiguientes.add(elemento);
             }
+            //INGRESAMOS A LOS CONJUNTOS
+            String cadena = val.replace("\\", "");
+            List<String> lista = new ArrayList<String>();
+            lista.add(cadena);
+            Application.App.ListaConjuntos.add(new Conjunto(new ArrayList<>(lista), val));
             //ITERAMOS
             parser.contId++;
             parser.num++;
@@ -1581,6 +1768,10 @@ class CUP$parser$actions {
             } else {
                 parser.ListaSiguientes.add(elemento);
             }
+            //INGRESAMOS A LOS CONJUNTOS
+            List<String> lista = new ArrayList<String>();
+            lista.add(caracter);
+            Application.App.ListaConjuntos.add(new Conjunto(new ArrayList<>(lista), caracter));
             //ITERAMOS
             parser.contId++;
             parser.num++;
@@ -1595,7 +1786,19 @@ class CUP$parser$actions {
           case 50: // DEFINICION ::= identificador TKDosPuntos cadena TKPuntoComa 
             {
               String RESULT =null;
+		int nombreleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).left;
+		int nombreright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).right;
+		String nombre = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
+		int lexemaleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int lexemaright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		String lexema = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
+    try{
+        Application.App.ListaCadenas.add(new Cadena(lexema, nombre));
+    }catch(Exception e){
+        System.err.println("Error de cadenas: " + e);
+    }
+
               CUP$parser$result = parser.getSymbolFactory().newSymbol("DEFINICION",4, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;
@@ -1604,7 +1807,19 @@ class CUP$parser$actions {
           case 51: // DEFINICION ::= DEFINICION identificador TKDosPuntos cadena TKPuntoComa 
             {
               String RESULT =null;
+		int nombreleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).left;
+		int nombreright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-3)).right;
+		String nombre = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-3)).value;
+		int lexemaleft = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).left;
+		int lexemaright = ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-1)).right;
+		String lexema = (String)((java_cup.runtime.Symbol) CUP$parser$stack.elementAt(CUP$parser$top-1)).value;
 		
+                try{
+                    Application.App.ListaCadenas.add(new Cadena(lexema, nombre));
+                }catch(Exception e){
+                    System.err.println("Error de cadenas: " + e);
+                }
+            
               CUP$parser$result = parser.getSymbolFactory().newSymbol("DEFINICION",4, ((java_cup.runtime.Symbol)CUP$parser$stack.elementAt(CUP$parser$top-4)), ((java_cup.runtime.Symbol)CUP$parser$stack.peek()), RESULT);
             }
           return CUP$parser$result;

@@ -19,6 +19,7 @@ parser code
     public static List<Integer> ListaAuxiliar;
     public static int[][] Transiciones;
     public static List<String> conjuntos;
+    public static List<String> Caracteres = new ArrayList<String>();
 
     public static void graficarAFD(String nombre){
 
@@ -35,7 +36,11 @@ parser code
 
             //Generamos los estados 
             for (int i = 0; i < estados.size() -1; i++){
-                pw.println("nodo" + estados.get(i).S + " [ label =\"S" + estados.get(i).S + "\"];");
+                if (estados.get(i).combinacion.contains(ListaSiguientes.size())){
+                    pw.println("nodo" + estados.get(i).S + " [ label =\"S" + estados.get(i).S + "\", shape=doublecircle ];");
+                } else {
+                    pw.println("nodo" + estados.get(i).S + " [ label =\"S" + estados.get(i).S + "\"];");
+                } 
             }
             //realizamos las transiciones
             for (int i = 0; i < estados.size() - 1; i++){
@@ -161,21 +166,16 @@ parser code
         try{
             //recorremos la lista de estados encontrados
             for (int i = 0; i < estados.size(); i++){
-                System.out.println("***********************************************");
-                System.out.println("EMPIEZO A RECORRER ESTADO: " + estados.get(i).S);
                 //recorremos las combinaciones del estado actual
                 for (int j = 0; j < estados.get(i).combinacion.size(); j++){
-                    System.out.println("EMPIEZO A RECORRER COMBINACION: " + estados.get(i).combinacion.get(j));
                     //obtenemos el indice de esa combinacion
                     int indice = estados.get(i).combinacion.get(j);
                     //obtenemos el string del conjunto de ese indice
                     String conjunto = GetCadenaConjunto(indice);
-                    System.out.println("ESTE ES EL CONJUNTO DE ESTA COMBINACION: " + conjunto);
                     //recorreremos la lista de estados nuevamente
                     for (int k = 0; k < estados.size(); k++){
                         //sera igual al estado que tenga la misma combinacion para obtener el estado
                         if (Equals(estados.get(k).combinacion, ListaSiguientes.get(indice - 1).siguientes)){
-                            System.out.println("LOS SIGUIENTES DE ESE CONJUNTO SON: " + ListaSiguientes.get(indice-1).siguientes);
                             Transiciones[i][GetConjunto(conjunto)] = estados.get(k).S;
                         }
                     }
@@ -448,49 +448,95 @@ INICIO ::= TKParA CUERPO EXPRESION TKPorcentaje TKPorcentaje TKPorcentaje TKPorc
 :};
 
 CUERPO ::= TKConj TKDosPuntos identificador:conjunto TKGuion TKMayor CONJUNTO TKPuntoComa{:
-    parser.contCon++;
+    try{
+            Application.App.ListaConjuntos.add(new Conjunto(new ArrayList<>(parser.Caracteres),conjunto));
+            parser.Caracteres.clear();
+            parser.contCon++;
+        }catch(Exception e){
+            System.err.println("Error de Conjuntos: " + e);
+        }
 :}
         | CUERPO TKConj TKDosPuntos identificador:conjunto TKGuion TKMayor CONJUNTO TKPuntoComa{:
-            parser.contCon++;
+            try{
+                Application.App.ListaConjuntos.add(new Conjunto(new ArrayList<>(parser.Caracteres),conjunto));
+                parser.Caracteres.clear();
+                parser.contCon++;
+            }catch(Exception e){
+                System.err.println("Error de Conjuntos: " + e);
+            }
         :};
 
-CONJUNTO ::= ASCII TKColocho ASCII{::}
+CONJUNTO ::= ASCII:a TKColocho ASCII:b{:
+    try{
+        int inicio;
+        int fin;
+        if (a == "\\n"){
+            inicio = 10;
+        } else if (a == "\\'"){
+            inicio = 39;
+        } else if (a == "\\\""){
+            inicio = 34;
+        } else {
+            inicio = (int)a.charAt(0);
+        }
+        if (b == "\\n"){
+            fin = 10;
+        } else if (b == "\\'"){
+            fin = 39;
+        } else if (b == "\\\""){
+            fin = 34;
+        } else {
+            fin = (int)b.charAt(0);
+        }
+        for (int i = inicio; i <= fin; i++){
+            char temp = (char)i;
+            String caracter = String.valueOf(temp);
+            parser.Caracteres.add(caracter);
+        }
+    }catch(Exception e){
+        System.err.println("Equis de: " + e);
+    }
+:}
             | CONJUNTOLARGO{::};
 
-CONJUNTOLARGO ::= CONJUNTOLARGO TKComa ASCII{::}
-                | ASCII{::};
+CONJUNTOLARGO ::= CONJUNTOLARGO TKComa ASCII:lexema{:
+    parser.Caracteres.add(lexema);
+:}
+                | ASCII:lexema{:
+                    parser.Caracteres.add(lexema);
+                :};
 
-ASCII ::= identificador
-        | C33
-        | C35
-        | C36
-        | TKPorcentaje
-        | C38
-        | C40
-        | C41
-        | TKAsterisco
-        | TKMas
-        | TKComa
-        | TKGuion
-        | TKPunto
-        | C47
-        | entero
-        | TKDosPuntos
-        | TKPuntoComa
-        | C60
-        | C61
-        | TKMayor
-        | TKInterrogacion
-        | C64
-        | C91
-        | C93
-        | C94
-        | C95
-        | C96
-        | TKParA
-        | TKBarra
-        | TKParC
-        | caracterespecial
+ASCII ::= identificador:a{:RESULT = a;:}
+        | C33:a{:RESULT = a;:}
+        | C35:a{:RESULT = a;:}
+        | C36:a{:RESULT = a;:}
+        | TKPorcentaje:a{:RESULT = a;:}
+        | C38:a{:RESULT = a;:}
+        | C40:a{:RESULT = a;:}
+        | C41:a{:RESULT = a;:}
+        | TKAsterisco:a{:RESULT = a;:}
+        | TKMas:a{:RESULT = a;:}
+        | TKComa:a{:RESULT = a;:}
+        | TKGuion:a{:RESULT = a;:}
+        | TKPunto:a{:RESULT = a;:}
+        | C47:a{:RESULT = a;:}
+        | entero:a{:RESULT = a;:}
+        | TKDosPuntos:a{:RESULT = a;:}
+        | TKPuntoComa:a{:RESULT = a;:}
+        | C60:a{:RESULT = a;:}
+        | C61:a{:RESULT = a;:}
+        | TKMayor:a{:RESULT = a;:}
+        | TKInterrogacion:a{:RESULT = a;:}
+        | C64:a{:RESULT = a;:}
+        | C91:a{:RESULT = a;:}
+        | C93:a{:RESULT = a;:}
+        | C94:a{:RESULT = a;:}
+        | C95:a{:RESULT = a;:}
+        | C96:a{:RESULT = a;:}
+        | TKParA:a{:RESULT = a;:}
+        | TKBarra:a{:RESULT = a;:}
+        | TKParC:a{:RESULT = a;:}
+        | caracterespecial:a{:RESULT = a;:}
 ;
 
 EXPRESION ::= identificador:nombre TKGuion TKMayor ARBOL:valor TKPuntoComa{:
@@ -573,6 +619,21 @@ EXPRESION ::= identificador:nombre TKGuion TKMayor ARBOL:valor TKPuntoComa{:
                 graficarSiguientes(nombre);
                 graficarTransiciones(raiz.primeros, nombre);
                 graficarAFD(nombre);
+                //ALMACENAMOS LAS TRANSICIONES Y LOS CONJUNTOS
+                
+                try{
+                    int EstadoFinal = -10;
+                    for (int i = 0; i < parser.estados.size(); i++){
+                        if (parser.estados.get(i).combinacion.contains(ListaSiguientes.size())){
+                            EstadoFinal = parser.estados.get(i).S;
+                        }
+                    }
+                Transiciones tempTrans = new Transiciones(parser.Transiciones, nombre, EstadoFinal, new ArrayList<>(parser.conjuntos));
+                Application.App.ListaTransiciones.add(tempTrans);
+                }catch(Exception e){
+                    System.err.println("Error de Transiciones: " + e);
+                }
+
                 parser.num = 1;
                 parser.ListaSiguientes.clear();
 :}
@@ -651,10 +712,26 @@ EXPRESION ::= identificador:nombre TKGuion TKMayor ARBOL:valor TKPuntoComa{:
                         }
                     }
                 }
+
                 graficarArbol(raiz, nombre);
                 graficarSiguientes(nombre);
                 graficarTransiciones(raiz.primeros, nombre);
                 graficarAFD(nombre);
+                //ALMACENAMOS LAS TRANSICIONES Y LOS CONJUNTOS
+                
+                try{
+                    int EstadoFinal = -10;
+                    for (int i = 0; i < parser.estados.size(); i++){
+                        if (parser.estados.get(i).combinacion.contains(ListaSiguientes.size())){
+                            EstadoFinal = parser.estados.get(i).S;
+                        }
+                    }
+                Transiciones tempTrans = new Transiciones(parser.Transiciones, nombre, EstadoFinal, new ArrayList<>(parser.conjuntos));
+                Application.App.ListaTransiciones.add(tempTrans);
+                }catch(Exception e){
+                    System.err.println("Error de Transiciones: " + e);
+                }
+
                 parser.num = 1;
                 parser.ListaSiguientes.clear();
             :};
@@ -845,7 +922,7 @@ HOJAS ::= TKParA:val0 identificador:val TKParC:val1{:
             parser.contId++;
             parser.num++;
             RESULT = NuevaHoja;
-        :}
+:}
         | caracterespecial:val{:
             //PARA EL CALCULO DE PRIMEROS
             int[] primeros = new int[1];
@@ -863,6 +940,11 @@ HOJAS ::= TKParA:val0 identificador:val TKParC:val1{:
             } else {
                 parser.ListaSiguientes.add(elemento);
             }
+            //INGRESAMOS A LOS CONJUNTOS
+            String cadena = val.replace("\\", "");
+            List<String> lista = new ArrayList<String>();
+            lista.add(cadena);
+            Application.App.ListaConjuntos.add(new Conjunto(new ArrayList<>(lista), val));
             //ITERAMOS
             parser.contId++;
             parser.num++;
@@ -887,6 +969,10 @@ HOJAS ::= TKParA:val0 identificador:val TKParC:val1{:
             } else {
                 parser.ListaSiguientes.add(elemento);
             }
+            //INGRESAMOS A LOS CONJUNTOS
+            List<String> lista = new ArrayList<String>();
+            lista.add(caracter);
+            Application.App.ListaConjuntos.add(new Conjunto(new ArrayList<>(lista), caracter));
             //ITERAMOS
             parser.contId++;
             parser.num++;
@@ -894,5 +980,17 @@ HOJAS ::= TKParA:val0 identificador:val TKParC:val1{:
             RESULT = NuevaHoja;
         :};
 
-DEFINICION ::= identificador TKDosPuntos cadena TKPuntoComa{::}
-            | DEFINICION identificador TKDosPuntos cadena TKPuntoComa{::};
+DEFINICION ::= identificador:nombre TKDosPuntos cadena:lexema TKPuntoComa{:
+    try{
+        Application.App.ListaCadenas.add(new Cadena(lexema, nombre));
+    }catch(Exception e){
+        System.err.println("Error de cadenas: " + e);
+    }
+:}
+            | DEFINICION identificador:nombre TKDosPuntos cadena:lexema TKPuntoComa{:
+                try{
+                    Application.App.ListaCadenas.add(new Cadena(lexema, nombre));
+                }catch(Exception e){
+                    System.err.println("Error de cadenas: " + e);
+                }
+            :};

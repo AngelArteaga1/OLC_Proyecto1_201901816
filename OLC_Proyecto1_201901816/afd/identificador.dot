@@ -2,7 +2,7 @@ digraph G{
 rankdir=LR
 node[shape=circle]
 nodo0 [ label ="S0"];
-nodo1 [ label ="S1"];
+nodo1 [ label ="S1", shape=doublecircle ];
 nodo0->nodo1 [label = "letra"]
 nodo1->nodo1 [label = "letra"]
 nodo1->nodo1 [label = "_"]

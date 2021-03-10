@@ -11,7 +11,7 @@ nodo6 [ label ="S6"];
 nodo7 [ label ="S7"];
 nodo8 [ label ="S8"];
 nodo9 [ label ="S9"];
-nodo10 [ label ="S10"];
+nodo10 [ label ="S10", shape=doublecircle ];
 nodo0->nodo1 [label = "num"]
 nodo1->nodo2 [label = "num"]
 nodo2->nodo3 [label = "/"]

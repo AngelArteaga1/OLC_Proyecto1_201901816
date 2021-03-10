@@ -1,5 +1,6 @@
 package Analizadores;
 import java_cup.runtime.*;
+import Application.Errores;
 
 %%
 
@@ -77,5 +78,7 @@ caracterespecial = ("\\""n"|"\\""\'"|"\\""\"")
 
 //CUALQUIER ERROR:           SIMBOLOS NO DEFINIDOS DENTRO DEL LENGUAJE
 .   {
-	    System.err.println("Error lexico: "+yytext()+ " Linea:"+(yyline)+" Columna:"+(yycolumn));
+        Application.App.TxtSalida.append("Error léxico: "+yytext()+ " Linea:"+(yyline)+" Columna:"+(yycolumn) + "\n");
+        Errores err = new Errores("Léxico", "El símbolo \"" + yytext() + "\" no pertenece al lenguaje", (yyline), (yycolumn));
+        Application.App.ListaErrores.add(err);
     }

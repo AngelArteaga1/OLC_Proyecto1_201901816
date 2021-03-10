@@ -39,6 +39,7 @@ public class App extends javax.swing.JFrame {
     public static List<Transiciones> ListaTransiciones;
     public static List<Conjunto> ListaConjuntos;
     public static List<Cadena> ListaCadenas;
+    public static List<Errores> ListaErrores;
     
     /**
      * Creates new form App
@@ -54,6 +55,7 @@ public class App extends javax.swing.JFrame {
         ListaTransiciones = new ArrayList<Transiciones>();
         ListaConjuntos = new ArrayList<Conjunto>();
         ListaCadenas = new ArrayList<Cadena>();
+        ListaErrores = new ArrayList<Errores>();
         try {
             scanner();
         } catch (InterruptedException ex) {
@@ -449,6 +451,7 @@ public class App extends javax.swing.JFrame {
         ListaTransiciones.clear();
         ListaConjuntos.clear();
         ListaCadenas.clear();
+        ListaErrores.clear();
         //INTENTAR INICIALIZAR ALGO
         parser.Caracteres = new ArrayList<String>();
         TxtSalida.setText("");
@@ -476,6 +479,7 @@ public class App extends javax.swing.JFrame {
         // TODO add your handling code here:
         System.out.println("");
         System.out.println("***************** SE VINO LO CHIDO *****************");
+        TxtSalida.setText("");
         /*
         System.out.println("");
         System.out.println("***************************************************************************************");
@@ -593,14 +597,14 @@ public class App extends javax.swing.JFrame {
                 //IMPRIMIMOS SI ES CORRECTO O INCORRECTO Y SEGUIMOS EL JSON
                 //System.out.println("EL LEXEMA FINALIZO EN EL ESTADO: " + S);
                 if (EstadoFinal == S && correcto == true) {
-                    System.out.println("EL LEXEMA: " + ListaCadenas.get(i).Lexema + " ES CORRECTO");
+                    TxtSalida.append("EL LEXEMA: " + ListaCadenas.get(i).Lexema + " ES CORRECTO\n");
                     pw.println("{");
                     pw.println("\"valor\": " + ListaCadenas.get(i).Lexema + ",");
                     pw.println("\"ExpresionRegular\": \"" + ListaCadenas.get(i).nombre + "\",");
                     pw.println("\"Resultado\":" + "\"Cadena Válida\"");
                     pw.println("},");
                 } else {
-                    System.out.println("EL LEXEMA: " + ListaCadenas.get(i).Lexema + " ES INCORRECTO");
+                    TxtSalida.append("EL LEXEMA: " + ListaCadenas.get(i).Lexema + " ES INCORRECTO\n");
                     pw.println("{");
                     pw.println("\"valor\": " + ListaCadenas.get(i).Lexema + ",");
                     pw.println("\"ExpresionRegular\": \"" + ListaCadenas.get(i).nombre + "\",");
@@ -611,6 +615,7 @@ public class App extends javax.swing.JFrame {
             pw.println("]");
         } catch (Exception e) {
             System.out.println("error, no se realizo el archivo");
+            TxtSalida.append("error, no se realizo el archivo\n");
         } finally {
             try {
                 if (null != fichero) {

@@ -1,0 +1,22 @@
+[
+{
+"valor": "hola_soy_id_1",
+"ExpresionRegular": "identificador",
+"Resultado":"Cadena Válida"
+},
+{
+"valor": "HoLA",
+"ExpresionRegular": "identificador",
+"Resultado":"Cadena Inválida"
+},
+{
+"valor": "301.59",
+"ExpresionRegular": "decimales",
+"Resultado":"Cadena Inválida"
+},
+{
+"valor": "1200.31",
+"ExpresionRegular": "decimales",
+"Resultado":"Cadena Válida"
+},
+]

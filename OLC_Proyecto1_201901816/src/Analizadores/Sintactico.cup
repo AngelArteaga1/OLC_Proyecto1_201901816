@@ -21,6 +21,59 @@ parser code
     public static List<String> conjuntos;
     public static List<String> Caracteres = new ArrayList<String>();
 
+    public static void GraficarErrores(){
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        try {
+            fichero = new FileWriter("Errores.html");
+            pw = new PrintWriter(fichero);
+            //EMPEZAMOS EL DOCUMENTO HTML       
+            pw.println("<!doctype html>");
+            pw.println("<head>");
+            pw.println("<meta charset=\"utf-8\">");
+            pw.println("<meta name=\"author\" content=\"Angel Arteaga\">");
+            pw.println("<meta name=\"descripción\" content=\"Errores de entrada\">");
+            pw.println("<title>Errores De Entrada</title>");
+            pw.println("</head>");
+            pw.println("<style>");
+            pw.println("table.GeneratedTable {width: 100%;background-color: #ffffff;border-collapse: collapse;border-width: 2px;border-color: #a2f575;border-style: solid;color: #000000;}");
+            pw.println("table.GeneratedTable td, table.GeneratedTable th {border-width: 2px;border-color: #a2f575;border-style: solid;padding: 3px;}");
+            pw.println("table.GeneratedTable thead {background-color: #bcf98b;}");
+            pw.println("</style>");
+            pw.println("<body>");
+            pw.println("<table class=\"GeneratedTable\">");
+            pw.println("<thead><tr><th>Número #</th><th>Tipo de Error</th><th>Descripción</th><th>Línea</th><th>Columna</th></tr></thead>");
+            pw.println("<tbody>");
+
+            //AHORA LA PARTE DINAMICA
+            for (int i = 0; i < Application.App.ListaErrores.size(); i++){
+                pw.println("<tr>");
+                pw.println("<td>" + i +"</td>");
+                pw.println("<td>" + Application.App.ListaErrores.get(i).Tipo +"</td>");
+                pw.println("<td>" + Application.App.ListaErrores.get(i).Descripcion +"</td>");
+                pw.println("<td>" + Application.App.ListaErrores.get(i).Linea +"</td>");
+                pw.println("<td>" + Application.App.ListaErrores.get(i).Columna +"</td>");
+                pw.println("</tr>");
+            }
+
+            pw.println("</tbody>");
+            pw.println("</table>");
+            pw.println("</body>");
+            pw.println("</html>");
+
+        } catch (Exception e) {
+            System.out.println("error, no se realizo el archivo");
+        } finally {
+            try {
+                if (null != fichero) {
+                    fichero.close();
+                }
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+    }
+
     public static void graficarAFD(String nombre){
 
         FileWriter fichero = null;
@@ -360,6 +413,7 @@ parser code
 
     public static void graficarArbol(Nodo act, String nombre){
 
+        /*
         System.out.println("****************************************************");
         System.out.println("Tamanio de la lista es de: " + ListaSiguientes.size());
         for (int i = 0; i < ListaSiguientes.size(); i++) {
@@ -369,7 +423,7 @@ parser code
                 System.out.println(ListaSiguientes.get(i).id + ", " + ListaSiguientes.get(i).valor + ", " + ListaSiguientes.get(i).siguientes);
             }
             
-        }
+        }*/
 
         FileWriter fichero = null;
         PrintWriter pw = null;
@@ -423,11 +477,16 @@ parser code
     //-----------------------------------------para errores sintacticos-------------------------------------------------------------------------------------------
     public void syntax_error(Symbol s)
     {
-        App.TxtSalida.append("Error en la Línea " + (s.right+1) +" Columna "+(s.left+1)+ ". Identificador "+s.value + " no reconocido. Se ha recuperado del error.\n" );
+        App.TxtSalida.append("Error en la Línea " + (s.right+1) +" Columna "+(s.left+1)+ ". Identificador "+s.value + " no reconocido.\n" );
+        Errores err = new Errores("Sintáctico", "El identificador \"" + s.value + "\" no se esperaba.", s.right+1, s.left+1);
+        Application.App.ListaErrores.add(err);
     }
     public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception
     {
         App.TxtSalida.append("Error en la Línea " + (s.right+1)+ " Columna "+(s.left+1)+". Identificador " +s.value + " no reconocido.\n");
+        Errores err = new Errores("Sintáctico", "El identificador \"" + s.value + "\" no se esperaba.", s.right+1, s.left+1);
+        Application.App.ListaErrores.add(err);
+        GraficarErrores();
     }
     //-------------------------------------------------------------------------------------------------------------------------------------------------------------
 :}

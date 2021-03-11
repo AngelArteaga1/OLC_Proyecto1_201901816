@@ -485,10 +485,10 @@ public class App extends javax.swing.JFrame {
             if (archivo != null){
                 String name = archivo.getName();
                 name = name.replaceFirst("[.][^.]+$", "");
-                fichero = new FileWriter("Graficas/Salidas/" + name + ".json");
+                fichero = new FileWriter("Graficas/Salidas_201901816/" + name + ".json");
                 pw = new PrintWriter(fichero);
             } else {
-                fichero = new FileWriter("Graficas/Salidas/Lexemas.json");
+                fichero = new FileWriter("Graficas/Salidas_201901816/Lexemas.json");
                 pw = new PrintWriter(fichero);
             }
             pw.println("[");

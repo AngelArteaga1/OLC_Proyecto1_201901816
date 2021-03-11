@@ -2,36 +2,36 @@ digraph G{
 rankdir=UD
 node[shape=record]
 concentrate=true
-nodo33 [ label =" { N |{1|.|8}| id: 0} "];
-nodo31 [ label =" { N |{1|.|2,3,4,5,6,7}| id: 0} "];
-nodo22 [ label =" { N |{1|.|2,3}| id: 0} "];
-nodo18 [ label =" { N |{1|@|1}| id: 1} "];
-nodo22->nodo18
-nodo21 [ label =" { N |{2,3|\||2,3}| id: 0} "];
-nodo19 [ label =" { N |{2|{minus}|2}| id: 2} "];
-nodo21->nodo19
-nodo20 [ label =" { N |{3|{mayus}|3}| id: 3} "];
-nodo21->nodo20
-nodo22->nodo21
-nodo31->nodo22
-nodo30 [ label =" { A |{4,5,6,7|*|4,5,6,7}| id: 0} "];
-nodo29 [ label =" { N |{4,5,6,7|\||4,5,6,7}| id: 0} "];
-nodo27 [ label =" { N |{4,5,6|\||4,5,6}| id: 0} "];
-nodo25 [ label =" { N |{4,5|\||4,5}| id: 0} "];
-nodo23 [ label =" { N |{4|{minus}|4}| id: 4} "];
-nodo25->nodo23
-nodo24 [ label =" { N |{5|{mayus}|5}| id: 5} "];
-nodo25->nodo24
-nodo27->nodo25
-nodo26 [ label =" { N |{6|{num}|6}| id: 6} "];
-nodo27->nodo26
-nodo29->nodo27
-nodo28 [ label =" { N |{7|_|7}| id: 7} "];
-nodo29->nodo28
-nodo30->nodo29
-nodo31->nodo30
-nodo33->nodo31
-nodo32 [ label =" { N |{8|#|8}| id: 8} "];
-nodo33->nodo32
+nodo59 [ label =" { N |{1|.|8}| id: 0} "];
+nodo57 [ label =" { N |{1|.|2,3,4,5,6,7}| id: 0} "];
+nodo48 [ label =" { N |{1|.|2,3}| id: 0} "];
+nodo44 [ label =" { N |{1|@|1}| id: 1} "];
+nodo48->nodo44
+nodo47 [ label =" { N |{2,3|\||2,3}| id: 0} "];
+nodo45 [ label =" { N |{2|{minus}|2}| id: 2} "];
+nodo47->nodo45
+nodo46 [ label =" { N |{3|{mayus}|3}| id: 3} "];
+nodo47->nodo46
+nodo48->nodo47
+nodo57->nodo48
+nodo56 [ label =" { A |{4,5,6,7|*|4,5,6,7}| id: 0} "];
+nodo55 [ label =" { N |{4,5,6,7|\||4,5,6,7}| id: 0} "];
+nodo53 [ label =" { N |{4,5,6|\||4,5,6}| id: 0} "];
+nodo51 [ label =" { N |{4,5|\||4,5}| id: 0} "];
+nodo49 [ label =" { N |{4|{minus}|4}| id: 4} "];
+nodo51->nodo49
+nodo50 [ label =" { N |{5|{mayus}|5}| id: 5} "];
+nodo51->nodo50
+nodo53->nodo51
+nodo52 [ label =" { N |{6|{num}|6}| id: 6} "];
+nodo53->nodo52
+nodo55->nodo53
+nodo54 [ label =" { N |{7|_|7}| id: 7} "];
+nodo55->nodo54
+nodo56->nodo55
+nodo57->nodo56
+nodo59->nodo57
+nodo58 [ label =" { N |{8|#|8}| id: 8} "];
+nodo59->nodo58
 
 }

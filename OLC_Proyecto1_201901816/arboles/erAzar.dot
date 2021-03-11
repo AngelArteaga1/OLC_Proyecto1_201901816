@@ -2,22 +2,22 @@ digraph G{
 rankdir=UD
 node[shape=record]
 concentrate=true
-nodo61 [ label =" { N |{1|.|4}| id: 0} "];
-nodo59 [ label =" { N |{1|.|2,3}| id: 0} "];
-nodo54 [ label =" { N |{1|+|1}| id: 0} "];
-nodo53 [ label =" { N |{1|{simbols}|1}| id: 1} "];
-nodo54->nodo53
-nodo59->nodo54
-nodo58 [ label =" { N |{2,3|+|2,3}| id: 0} "];
-nodo57 [ label =" { N |{2,3|\||2,3}| id: 0} "];
-nodo55 [ label =" { N |{2|{minus}|2}| id: 2} "];
-nodo57->nodo55
-nodo56 [ label =" { N |{3|{mayus}|3}| id: 3} "];
-nodo57->nodo56
-nodo58->nodo57
-nodo59->nodo58
-nodo61->nodo59
-nodo60 [ label =" { N |{4|#|4}| id: 4} "];
-nodo61->nodo60
+nodo87 [ label =" { N |{1|.|4}| id: 0} "];
+nodo85 [ label =" { N |{1|.|2,3}| id: 0} "];
+nodo80 [ label =" { N |{1|+|1}| id: 0} "];
+nodo79 [ label =" { N |{1|{simbols}|1}| id: 1} "];
+nodo80->nodo79
+nodo85->nodo80
+nodo84 [ label =" { N |{2,3|+|2,3}| id: 0} "];
+nodo83 [ label =" { N |{2,3|\||2,3}| id: 0} "];
+nodo81 [ label =" { N |{2|{minus}|2}| id: 2} "];
+nodo83->nodo81
+nodo82 [ label =" { N |{3|{mayus}|3}| id: 3} "];
+nodo83->nodo82
+nodo84->nodo83
+nodo85->nodo84
+nodo87->nodo85
+nodo86 [ label =" { N |{4|#|4}| id: 4} "];
+nodo87->nodo86
 
 }

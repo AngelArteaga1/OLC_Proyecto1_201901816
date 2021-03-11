@@ -357,7 +357,7 @@ public class parser extends java_cup.runtime.lr_parser {
             //dirección del archivo dot
             String fileInputPath = "afd/" + nombre + ".dot";
             //dirección donde se creara la magen
-            String fileOutputPath = "Graficas/AFD/" + nombre + ".jpg";
+            String fileOutputPath = "Graficas/AFD_201901816/" + nombre + ".jpg";
             //tipo de conversón
             String tParam = "-Tjpg";
             String tOParam = "-o";
@@ -434,7 +434,7 @@ public class parser extends java_cup.runtime.lr_parser {
             //dirección del archivo dot
             String fileInputPath = "afnd/" + nombre + ".dot";
             //dirección donde se creara la magen
-            String fileOutputPath = "Graficas/AFND/" + nombre + ".jpg";
+            String fileOutputPath = "Graficas/AFND_201901816/" + nombre + ".jpg";
             //tipo de conversón
             String tParam = "-Tjpg";
             String tOParam = "-o";
@@ -609,7 +609,7 @@ public class parser extends java_cup.runtime.lr_parser {
             //dirección del archivo dot
             String fileInputPath = "transiciones/" + nombre + ".dot";
             //dirección donde se creara la magen
-            String fileOutputPath = "Graficas/Transiciones/" + nombre + ".jpg";
+            String fileOutputPath = "Graficas/Transiciones_201901816/" + nombre + ".jpg";
             //tipo de conversón
             String tParam = "-Tjpg";
             String tOParam = "-o";
@@ -696,7 +696,7 @@ public class parser extends java_cup.runtime.lr_parser {
             //dirección del archivo dot
             String fileInputPath = "siguientes/" + nombre + ".dot";
             //dirección donde se creara la magen
-            String fileOutputPath = "Graficas/Siguientes/" + nombre + ".jpg";
+            String fileOutputPath = "Graficas/Siguientes_201901816/" + nombre + ".jpg";
             //tipo de conversón
             String tParam = "-Tjpg";
             String tOParam = "-o";
@@ -748,7 +748,7 @@ public class parser extends java_cup.runtime.lr_parser {
             //dirección del archivo dot
             String fileInputPath = "arboles/" + nombre + ".dot";
             //dirección donde se creara la magen
-            String fileOutputPath = "Graficas/arboles/" + nombre + ".jpg";
+            String fileOutputPath = "Graficas/Arboles_201901816/" + nombre + ".jpg";
             //tipo de conversón
             String tParam = "-Tjpg";
             String tOParam = "-o";

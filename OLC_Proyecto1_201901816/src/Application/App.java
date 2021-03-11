@@ -22,6 +22,7 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -52,6 +53,7 @@ public class App extends javax.swing.JFrame {
                 Imagen.getHeight(), Image.SCALE_DEFAULT);
         Icon iconoEscalado = new ImageIcon(imgEscalada);
         Imagen.setIcon(iconoEscalado);
+        Imagen.setHorizontalAlignment(SwingConstants.CENTER);
         ListaTransiciones = new ArrayList<Transiciones>();
         ListaConjuntos = new ArrayList<Conjunto>();
         ListaCadenas = new ArrayList<Cadena>();
@@ -94,15 +96,10 @@ public class App extends javax.swing.JFrame {
     }
 
     public void scanner() throws InterruptedException {
-        // creates a file with the location filename
         String location = "Graficas";
         File currentDir = new File(location);
-
-        // result is the variable name for jtree
         DefaultTreeModel model = (DefaultTreeModel) jTree1.getModel();
-        // gets the root of the current model used only once at the starting
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
-        // function called
         displayDirectoryContents(currentDir, root);
     }
     
@@ -197,6 +194,7 @@ public class App extends javax.swing.JFrame {
         jMenuItem4 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(255, 255, 255));
 
         TxtEntrada.setColumns(20);
         TxtEntrada.setFont(new java.awt.Font("Bookman Old Style", 0, 14)); // NOI18N
@@ -480,32 +478,7 @@ public class App extends javax.swing.JFrame {
         System.out.println("");
         System.out.println("***************** SE VINO LO CHIDO *****************");
         TxtSalida.setText("");
-        /*
-        System.out.println("");
-        System.out.println("***************************************************************************************");
-        System.out.println("ESTA ES LA LISTA DE LEXEMAS:");
-        for (int i  = 0; i < ListaCadenas.size(); i++){
-            System.out.println("Lexema: " + ListaCadenas.get(i).Lexema + " nombre: " + ListaCadenas.get(i).nombre);
-        }
-        System.out.println("ESTA ES LA LISTA DE CONJUNTOS:");
-        for (int i  = 0; i < ListaConjuntos.size(); i++){
-            System.out.println("************************");
-            System.out.println("Conjunto: " + ListaConjuntos.get(i).nombre);
-            System.out.println(ListaConjuntos.get(i).Caracteres);
-        }
-        System.out.println("TABLA DE TRANSICIONES:");
-        for (int i = 0; i < ListaTransiciones.size(); i++){
-            System.out.println("**********************************************");
-            System.out.println("Transicion: " + ListaTransiciones.get(i).nombre);
-            for (int x = 0; x < ListaTransiciones.get(i).transiciones.length; x++){
-                for (int y = 0; y < ListaTransiciones.get(i).transiciones[x].length; y++){
-                    System.out.print(ListaTransiciones.get(i).transiciones[x][y] + ", ");
-                }
-                System.out.println("");
-            }
-            System.out.println("");
-            System.out.println("Conjuntos en orden: " + ListaTransiciones.get(i).conjuntos);
-        }*/
+        
         FileWriter fichero = null;
         PrintWriter pw = null;
         try {
@@ -654,7 +627,7 @@ public class App extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Windows".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }

@@ -639,7 +639,7 @@ public class Lexico implements java_cup.runtime.Scanner {
       else {
         switch (zzAction < 0 ? zzAction : ZZ_ACTION[zzAction]) {
           case 1: 
-            { Application.App.TxtSalida.append("Error léxico: "+yytext()+ " Linea:"+(yyline)+" Columna:"+(yycolumn));
+            { Application.App.TxtSalida.append("Error léxico: "+yytext()+ " Linea:"+(yyline)+" Columna:"+(yycolumn) + "\n");
         Errores err = new Errores("Léxico", "El símbolo \"" + yytext() + "\" no pertenece al lenguaje", (yyline), (yycolumn));
         Application.App.ListaErrores.add(err);
             } 

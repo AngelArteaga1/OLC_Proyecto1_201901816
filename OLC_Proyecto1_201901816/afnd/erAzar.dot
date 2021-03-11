@@ -1,0 +1,19 @@
+digraph G{
+rankdir=LR
+node[shape=circle]
+nodo0 [ label ="S0"];
+nodo1 [ label ="S1"];
+nodo2 [ label ="S2", shape=doublecircle ];
+nodo0->SS1 [label = "ε"]
+SS1->nodo1 [label = "simbols"]
+nodo1->SS4 [label = "ε"]
+SS4->nodo1 [label = "simbols"]
+nodo1->SS5 [label = "ε"]
+SS5->nodo2 [label = "minus"]
+nodo1->SS6 [label = "ε"]
+SS6->nodo2 [label = "mayus"]
+nodo2->SS8 [label = "ε"]
+SS8->nodo2 [label = "minus"]
+nodo2->SS9 [label = "ε"]
+SS9->nodo2 [label = "mayus"]
+}

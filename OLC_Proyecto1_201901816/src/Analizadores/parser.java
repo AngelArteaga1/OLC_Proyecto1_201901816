@@ -274,7 +274,6 @@ public class parser extends java_cup.runtime.lr_parser {
             pw.println("<table class=\"GeneratedTable\">");
             pw.println("<thead><tr><th>Número #</th><th>Tipo de Error</th><th>Descripción</th><th>Línea</th><th>Columna</th></tr></thead>");
             pw.println("<tbody>");
-
             //AHORA LA PARTE DINAMICA
             for (int i = 0; i < Application.App.ListaErrores.size(); i++){
                 pw.println("<tr>");
@@ -304,7 +303,7 @@ public class parser extends java_cup.runtime.lr_parser {
         }
     }
 
-    public static void graficarAFD(String nombre){
+    public static void graficarAFND(String nombre){
 
         FileWriter fichero = null;
         PrintWriter pw = null;
@@ -359,6 +358,83 @@ public class parser extends java_cup.runtime.lr_parser {
             String fileInputPath = "afd/" + nombre + ".dot";
             //dirección donde se creara la magen
             String fileOutputPath = "Graficas/AFD/" + nombre + ".jpg";
+            //tipo de conversón
+            String tParam = "-Tjpg";
+            String tOParam = "-o";
+
+            String[] cmd = new String[5];
+            cmd[0] = dotPath;
+            cmd[1] = tParam;
+            cmd[2] = fileInputPath;
+            cmd[3] = tOParam;
+            cmd[4] = fileOutputPath;
+
+            Runtime rt = Runtime.getRuntime();
+
+            rt.exec(cmd);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static void graficarAFD(String nombre){
+
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        try {
+            fichero = new FileWriter("afnd/" + nombre + ".dot");
+            pw = new PrintWriter(fichero);
+            pw.println("digraph G{");
+
+            pw.println("rankdir=LR");
+
+            pw.println("node[shape=circle]");
+
+            //Generamos los estados 
+            for (int i = 0; i < estados.size() -1; i++){
+                if (estados.get(i).combinacion.contains(ListaSiguientes.size())){
+                    pw.println("nodo" + estados.get(i).S + " [ label =\"S" + estados.get(i).S + "\", shape=doublecircle ];");
+                } else {
+                    pw.println("nodo" + estados.get(i).S + " [ label =\"S" + estados.get(i).S + "\"];");
+                } 
+            }
+            //realizamos las transiciones
+            int x = 1;
+            for (int i = 0; i < estados.size() - 1; i++){
+                for (int j = 0; j < conjuntos.size() - 1; j++){
+                    if (Transiciones[i][j] != -1){
+                        String conjunto = conjuntos.get(j);
+                        if (conjunto.equals("\\n") || conjunto.equals("\\'")||conjunto.equals("\\\"")){
+                            conjunto = conjunto.replace("\\", "\\\\");
+                        }
+                        pw.println("nodo" + i + "->SS" + x + " [label = \"" + "ε" + "\"]");
+                        pw.println("SS" + x + "->nodo" + Transiciones[i][j] + " [label = \"" + conjunto + "\"]");
+                    }
+                    x++;
+                }
+            }
+
+            pw.println("}");
+
+        } catch (Exception e) {
+            System.out.println("error, no se realizo el archivo");
+        } finally {
+            try {
+                if (null != fichero) {
+                    fichero.close();
+                }
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+        try {
+            //dirección doonde se ecnuentra el compilador de graphviz
+            String dotPath = "C:\\Program Files\\Graphviz\\bin\\dot.exe";
+            //dirección del archivo dot
+            String fileInputPath = "afnd/" + nombre + ".dot";
+            //dirección donde se creara la magen
+            String fileOutputPath = "Graficas/AFND/" + nombre + ".jpg";
             //tipo de conversón
             String tParam = "-Tjpg";
             String tOParam = "-o";
@@ -447,8 +523,8 @@ public class parser extends java_cup.runtime.lr_parser {
                 Transiciones[i][j] = -1;
             }
         }
+
         //INGRESAMOS LOS DATOS A LA MATRIZ
-        
         try{
             //recorremos la lista de estados encontrados
             for (int i = 0; i < estados.size(); i++){
@@ -642,18 +718,6 @@ public class parser extends java_cup.runtime.lr_parser {
     }
 
     public static void graficarArbol(Nodo act, String nombre){
-
-        /*
-        System.out.println("****************************************************");
-        System.out.println("Tamanio de la lista es de: " + ListaSiguientes.size());
-        for (int i = 0; i < ListaSiguientes.size(); i++) {
-            if (ListaSiguientes.get(i).siguientes.size() == 0){
-                System.out.println(ListaSiguientes.get(i).id + " " + ListaSiguientes.get(i).valor);
-            } else {
-                System.out.println(ListaSiguientes.get(i).id + ", " + ListaSiguientes.get(i).valor + ", " + ListaSiguientes.get(i).siguientes);
-            }
-            
-        }*/
 
         FileWriter fichero = null;
         PrintWriter pw = null;
@@ -1357,6 +1421,7 @@ class CUP$parser$actions {
                 graficarSiguientes(nombre);
                 graficarTransiciones(raiz.primeros, nombre);
                 graficarAFD(nombre);
+                graficarAFND(nombre);
                 //ALMACENAMOS LAS TRANSICIONES Y LOS CONJUNTOS
                 
                 try{
@@ -1469,6 +1534,7 @@ class CUP$parser$actions {
                 graficarSiguientes(nombre);
                 graficarTransiciones(raiz.primeros, nombre);
                 graficarAFD(nombre);
+                graficarAFND(nombre);
                 //ALMACENAMOS LAS TRANSICIONES Y LOS CONJUNTOS
                 
                 try{

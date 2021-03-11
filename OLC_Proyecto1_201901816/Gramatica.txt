@@ -1,0 +1,106 @@
+A continuación se encuentra la gramática desarrollada para poder leer el lenguaje de RegexIve:
+
+SIMBOLOS NO TERMINALES:
+	Estos son los no terminales que utilizan una expresion regular:
+	blancos = [ \t\r\n]+
+	entero = [0-9]
+	identificador = [A-Za-z]([A-Za-z]|[0-9]+|_)*
+	commen = (/.*\n)|(/.*\r)
+	commenM = (<![^\!]*!>)
+	cadena = ("([^\"]*)")
+	caracterespecial = (\n|\'|\")
+	Estos son los no terminales que son un patrón específico:
+	"{"
+	"}"
+	","
+	"|"
+	"."
+	"+"
+	"*"
+	"%"
+	";"
+	"?"
+	"~"
+	":"
+	"-"
+	">"
+	"CONJ"
+	Estos son los no terminales ASCII que son aceptados:
+	"!"
+	"#"
+	"$"
+	"&"
+	"("
+	")"
+	"/"
+	"<"
+	"="
+	"@"
+	"["
+	"]"
+	"^"
+	"_"
+	"`"
+
+SIMBOLOS TERMINALES:
+	INICIO
+	CUERPO
+	CONJUNTO
+	EXPRESION
+	DEFINICION
+	ASCII
+	CONJUNTOLARGO
+	ARBOL
+	HOJAS
+
+ESTAS SON LAS PRODUCCIONES DE MI GRAMATICA:
+	INICIO -> "{" CUERPO EXPRESION "%" "%" "%" "%" DEFINICION "}"
+	CUERPO -> "CONJ" ":" identificador "-" ">" CONJUNTO ";"
+		| CUERPO -> CUERPO "CONJ" ":" identificador "-" ">" CONJUNTO ";"
+	CONJUNTO -> ASCII "~" ASCII
+		| CONJUNTOLARGO
+	CONJUNTOLARGO -> CONJUNTOLARGO ";" ASCII
+		| ASCII
+	ASCII -> identificador
+		| "{"
+		| "}"
+		| ","
+		| "|"
+		| "."
+		| "+"
+		| "*"
+		| "%"
+		| ";"
+		| "?"
+		| "~"
+		| ":"
+		| "-"
+		| ">"
+		| "!"
+		| "#"
+		| "$"
+		| "&"
+		| "("
+		| ")"
+		| "/"
+		| "<"
+		| "="
+		| "@"
+		| "["
+		| "]"
+		| "^"
+		| "_"
+		| "`"
+	EXPRESION -> identificador "-" ">" ARBOL ";"
+		| EXPRESION identificador "-" ">" ARBOL ";"
+	ARBOL -> ";" ARBOL ARBOL
+		| "|" ARBOL ARBOL
+		| "*" ARBOL
+		| "+" ARBOL
+		| "?" ARBOL
+		| HOJAS
+	HOJAS -> "{" identificador "}"
+		| caracterespecial
+		| cadena
+	DEFINICION -> identificador ":" cadena ";"
+		| DEFINICION identificador ":" cadena ";"

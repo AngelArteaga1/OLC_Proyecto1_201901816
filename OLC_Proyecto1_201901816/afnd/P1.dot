@@ -1,0 +1,31 @@
+digraph G{
+rankdir=LR
+node[shape=circle]
+nodo0 [ label ="S0"];
+nodo1 [ label ="S1"];
+nodo2 [ label ="S2"];
+nodo3 [ label ="S3"];
+nodo4 [ label ="S4"];
+nodo5 [ label ="S5"];
+nodo6 [ label ="S6"];
+nodo7 [ label ="S7"];
+nodo8 [ label ="S8", shape=doublecircle ];
+nodo0->SS1 [label = "ε"]
+SS1->nodo1 [label = "posibles"]
+nodo1->SS6 [label = "ε"]
+SS6->nodo2 [label = "-"]
+nodo1->SS7 [label = "ε"]
+SS7->nodo3 [label = "digito"]
+nodo2->SS11 [label = "ε"]
+SS11->nodo3 [label = "digito"]
+nodo3->SS15 [label = "ε"]
+SS15->nodo4 [label = "digito"]
+nodo4->SS19 [label = "ε"]
+SS19->nodo5 [label = "digito"]
+nodo5->SS24 [label = "ε"]
+SS24->nodo6 [label = "letra"]
+nodo6->SS28 [label = "ε"]
+SS28->nodo7 [label = "letra"]
+nodo7->SS32 [label = "ε"]
+SS32->nodo8 [label = "letra"]
+}
